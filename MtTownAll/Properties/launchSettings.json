@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MtTownAll (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MtTownAll (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

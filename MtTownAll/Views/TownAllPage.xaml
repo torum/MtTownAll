@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MtTownAll.Views.TownAllPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MtTownAll.Views"
+    xmlns:model="using:MtTownAll.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        NavigationCacheMode="Required"
+        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    mc:Ignorable="d">
+
+    <Grid Margin="0,48,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <CommandBar DefaultLabelPosition="Right">
+                <AppBarButton Icon="OpenFile" Label="Select File" Click="FileOpen"></AppBarButton>
+
+                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB"></AppBarButton>
+
+                <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
+                <CommandBar.Content>
+                    <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
+                        <TextBlock Text="全国 町字マスター" Style="{ThemeResource TitleTextBlockStyle}" />
+                        <TextBlock Text="mt_town_all.csv" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="12,14" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </CommandBar.Content>
+            </CommandBar>
+
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="48,12,0,12">
+            <controls:DataGrid ItemsSource="{x:Bind ViewModel.TownAllSource, Mode=OneWay}" Grid.Row="1" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
+                <controls:DataGrid.Resources>
+                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
+                </controls:DataGrid.Resources>
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="町字ID">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind TownID}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="町字区分コード">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind ChouAzaType}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="都道府県名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="郡名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind CountyName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="市区町村名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind SikuchousonName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="政令市区名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind WardName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="大字・町名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind TownName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="丁目名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind Choume}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="子字">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind KoazaName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="郵便番号">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Town">
+                                <TextBlock Text="{x:Bind PostalCode}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Grid>
+
+    </Grid>
+</Page>

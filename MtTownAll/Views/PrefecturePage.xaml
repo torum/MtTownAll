@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MtTownAll.Views.PrefecturePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MtTownAll.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+        xmlns:model="using:MtTownAll.Models"
+        NavigationCacheMode="Required"
+    mc:Ignorable="d">
+
+    <Grid Margin="0,48,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <CommandBar DefaultLabelPosition="Right">
+                <AppBarButton Icon="OpenFile" Label="Select File"></AppBarButton>
+
+                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB"></AppBarButton>
+
+                <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
+                <CommandBar.Content>
+                    <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
+                        <TextBlock Text="全国 都道府県マスター" Style="{ThemeResource TitleTextBlockStyle}" />
+                        <TextBlock Text="mt_pref_all.csv" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="12,14" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </CommandBar.Content>
+            </CommandBar>
+
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="48,12,0,12">
+            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.PrefectureSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
+                <controls:DataGrid.Resources>
+                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
+                </controls:DataGrid.Resources>
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="都道府県コード" Tag="PrefectureCodeID">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Prefecture">
+                                <TextBlock Text="{x:Bind Code}" Margin="12,0,0,0" Padding="5"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Prefecture">
+                                <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="都道府県名" Tag="PrefectureName">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Prefecture">
+                                <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+
+                    <controls:DataGridTemplateColumn Header="都道府県名_カナ">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Prefecture">
+                                <TextBlock Text="{x:Bind PrefectureNameKana}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="都道府県名_英字">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:Prefecture">
+                                <TextBlock Text="{x:Bind PrefectureNameEnglish}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Grid>
+
+    </Grid>
+</Page>

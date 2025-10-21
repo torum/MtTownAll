@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MtTownAll.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MtTownAll"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" 
+    xmlns:mod="using:MtTownAll.Models" 
+        NavigationCacheMode="Required"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- App dummy titlebar -->
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="48"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <!-- NavigationView.PaneToggleButton: None draggable area(48px). Exclude from TitleBar -->
+                <Button x:Name="DummyButton" Height="36" Width="40" Margin="3,6,0,0" Visibility="Collapsed"/>
+            </Grid>
+            <Grid x:Name="AppTitleBar" Grid.Column="1">
+                <!-- Application TitleBar: SetTitleBar in code behinde -->
+                <TextBlock x:Name="AppTitleDummyTextBlock" Text="" Margin="0,0,0,0" Opacity="0.9" Visibility="Collapsed"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BorderBrush="{ThemeResource SmokeFillColorDefaultBrush}" BorderThickness="0,0,0,0">
+
+            <NavigationView x:Name="NaviView" MenuItemsSource="{x:Bind ViewModel.MainMenuItems, Mode=OneWay}" AccessKey="H" PaneDisplayMode="Auto" IsTitleBarAutoPaddingEnabled="True" IsBackButtonVisible="Collapsed" IsPaneToggleButtonVisible="True" IsSettingsVisible="True" ExpandedModeThresholdWidth="1008" CompactModeThresholdWidth="640" OpenPaneLength ="320" Loaded="NaviView_Loaded" ItemInvoked="NaviView_ItemInvoked" SelectionChanged="NaviView_SelectionChanged">
+                <!-- Header pane -->
+                <NavigationView.PaneHeader>
+                    <!-- App title and icon -->
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!-- App icon and app name -->
+                        <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Image x:Name="AppTitleIcon" Source="/Assets/App.ico" HorizontalAlignment="Left" VerticalAlignment="Center" Width="17" Height="17" Margin="0,0,0,0"/>
+                            <TextBlock x:Name="AppTitleTextBlock" Text="MtTownAll" FontWeight="SemiBold" Margin="6,0,0,0" VerticalAlignment="Center" Opacity="0.9"/>
+                        </StackPanel>
+                        <!-- Progress ring, Settings, etc -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="12,0,6,0">
+
+                            <ProgressRing IsActive="{x:Bind ViewModel.IsWorking, Mode=OneWay}" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+                            <!-- I want to have a settings button right here. -->
+                            <Button x:Name="SettingsButton" Width="40" Height="36" HorizontalAlignment="Right" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Visibility="Collapsed">
+                                <AnimatedIcon Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <AnimatedIcon.Source>
+                                        <animatedvisuals:AnimatedSettingsVisualSource />
+                                    </AnimatedIcon.Source>
+                                    <AnimatedIcon.FallbackIconSource>
+                                        <SymbolIconSource Symbol="Setting" />
+                                    </AnimatedIcon.FallbackIconSource>
+                                </AnimatedIcon>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </NavigationView.PaneHeader>
+
+                <!-- Menu Items -->
+                <NavigationView.MenuItemTemplate>
+                    <DataTemplate x:DataType="mod:NodeTree">
+                        <NavigationViewItem MenuItemsSource="{x:Bind Children, Mode=OneWay}" IsExpanded="{x:Bind Expanded, Mode=TwoWay}" IsSelected="{x:Bind Selected, Mode=TwoWay}" Tag="{x:Bind Tag, Mode=OneWay}">
+                            <NavigationViewItem.Icon>
+                                <PathIcon Width="NaN" Height="NaN" Margin="0" Data="{x:Bind PathIcon, Mode=OneWay}"/>
+                            </NavigationViewItem.Icon>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0">
+                                <TextBlock Text="{x:Bind Name, Mode=OneWay}" Margin="0,0,0,0"></TextBlock>
+                            </StackPanel>
+                        </NavigationViewItem>
+                    </DataTemplate>
+                </NavigationView.MenuItemTemplate>
+
+                <Grid>
+                    <!-- NavigationView content frame -->
+                    <Frame x:Name="NavigationFrame"/>
+                </Grid>
+            </NavigationView>
+
+        </Grid>
+
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NaviView.IsPaneToggleButtonVisible" Value="True" />
+                        <Setter Target="NaviView.PaneDisplayMode" Value="Left" />
+                        <Setter Target="NaviView.IsPaneOpen" Value="True" />
+                        <Setter Target="NaviView.OpenPaneLength" Value="320" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1008" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NaviView.IsPaneToggleButtonVisible" Value="True" />
+                        <Setter Target="NaviView.PaneDisplayMode" Value="Left" />
+                        <Setter Target="NaviView.IsPaneOpen" Value="True" />
+                        <Setter Target="NaviView.OpenPaneLength" Value="280" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="640" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NaviView.IsPaneToggleButtonVisible" Value="True" />
+                        <Setter Target="NaviView.PaneDisplayMode" Value="CompactLeft" />
+                        <Setter Target="NaviView.IsPaneOpen" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="340" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NaviView.IsPaneToggleButtonVisible" Value="True" />
+                        <Setter Target="NaviView.PaneDisplayMode" Value="CompactLeft" />
+                        <Setter Target="NaviView.IsPaneOpen" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="NaviView.IsPaneToggleButtonVisible" Value="True" />
+                        <Setter Target="NaviView.PaneDisplayMode" Value="CompactLeft" />
+                        <Setter Target="NaviView.IsPaneOpen" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>
