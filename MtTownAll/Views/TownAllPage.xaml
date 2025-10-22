@@ -19,15 +19,15 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <CommandBar DefaultLabelPosition="Right">
-                <AppBarButton Icon="OpenFile" Label="Select File" Click="FileOpen"></AppBarButton>
+                <AppBarButton Icon="OpenFile" Label="Select File" Command="{x:Bind ViewModel.FileTownAllOpenCommand}"></AppBarButton>
 
-                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB"></AppBarButton>
+                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB" Command="{x:Bind ViewModel.InsertAllIntoMtTownAllTableCommand}"></AppBarButton>
 
                 <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
                 <CommandBar.Content>
                     <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
                         <TextBlock Text="全国 町字マスター" Style="{ThemeResource TitleTextBlockStyle}" />
-                        <TextBlock Text="mt_town_all.csv" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="12,14" FontWeight="SemiBold"/>
+                        <HyperlinkButton NavigateUri="https://www.digital.go.jp/policies/base_registry_address" Margin="12,0,0,0" FontWeight="SemiBold" VerticalAlignment="Bottom">mt_town_all.csv</HyperlinkButton>
                     </StackPanel>
                 </CommandBar.Content>
             </CommandBar>

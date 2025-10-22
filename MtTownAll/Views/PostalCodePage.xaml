@@ -19,15 +19,15 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <CommandBar DefaultLabelPosition="Right">
-                <AppBarButton Icon="OpenFile" Label="Select File" Click="FileOpen"></AppBarButton>
+                <AppBarButton Icon="OpenFile" Label="Select File" Command="{x:Bind ViewModel.FileKenAllOpenCommand}"></AppBarButton>
 
-                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB" Click="Save"></AppBarButton>
+                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB" Command="{x:Bind ViewModel.InsertAllIntoXKenAllTableCommand}"></AppBarButton>
 
                 <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
                 <CommandBar.Content>
                     <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
-                        <TextBlock Text="郵便番号データ" Style="{ThemeResource TitleTextBlockStyle}" />
-                        <TextBlock Text="x-ken-all.csv" Foreground="{ThemeResource AccentFillColorDefaultBrush}" Margin="12,14" FontWeight="SemiBold"/>
+                        <TextBlock Text="郵便番号データ（加工済みバージョン）" Style="{ThemeResource TitleTextBlockStyle}" />
+                        <HyperlinkButton NavigateUri="https://zipcloud.ibsnet.co.jp/" Margin="12,0,0,0" FontWeight="SemiBold" VerticalAlignment="Bottom">x-ken-all.csv</HyperlinkButton>
                     </StackPanel>
                 </CommandBar.Content>
             </CommandBar>

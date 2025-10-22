@@ -1,32 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using MtTownAll.Services.Contracts;
+﻿using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
+using MtTownAll.Services.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MtTownAll.Services;
 
-// 1. Contracts/Services/IPrefectureDataService.cs
-// 2. Services/PrefectureDataService.cs
-// 3. Models/Prefecture.cs
-public class PrefectureDataService : IPrefectureDataService
+public class MtPrefAllDataService : IMtPrefAllDataService
 {
     private List<Prefecture> _prefectures;
 
-    public PrefectureDataService()
-    {
-        _prefectures = new List<Prefecture>(Prefectures);
-    }
-
-    private static IEnumerable<Prefecture> Prefectures => new List<Prefecture>()
-        {
+    private static IEnumerable<Prefecture> Prefectures =>
+        [
             new()
             {
                 MunicipalityCode = "010006",
                 Code = "01",
                 PrefectureName = "北海道",
                 PrefectureNameKana = "ホッカイドウ",
-                PrefectureNameEnglish = "Hokkaido"
+                PrefectureNameRoma = "Hokkaido"
             },
             new()
             {
@@ -34,7 +29,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "02",
                 PrefectureName = "青森県",
                 PrefectureNameKana = "アオモリケン",
-                PrefectureNameEnglish = "Aomori"
+                PrefectureNameRoma = "Aomori"
             },
             new()
             {
@@ -42,7 +37,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "03",
                 PrefectureName = "岩手県",
                 PrefectureNameKana = "イワテケン",
-                PrefectureNameEnglish = "Iwate"
+                PrefectureNameRoma = "Iwate"
             },
             new()
             {
@@ -50,7 +45,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "04",
                 PrefectureName = "宮城県",
                 PrefectureNameKana = "ミヤギケン",
-                PrefectureNameEnglish = "Miyagi"
+                PrefectureNameRoma = "Miyagi"
             },
             new()
             {
@@ -58,7 +53,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "05",
                 PrefectureName = "秋田県",
                 PrefectureNameKana = "アキタケン",
-                PrefectureNameEnglish = "Akita"
+                PrefectureNameRoma = "Akita"
             },
             new()
             {
@@ -66,7 +61,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "06",
                 PrefectureName = "山形県",
                 PrefectureNameKana = "ヤマガタケン",
-                PrefectureNameEnglish = "Yamagata"
+                PrefectureNameRoma = "Yamagata"
             },
             new()
             {
@@ -74,7 +69,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "07",
                 PrefectureName = "福島県",
                 PrefectureNameKana = "フクシマケン",
-                PrefectureNameEnglish = "Fukushima"
+                PrefectureNameRoma = "Fukushima"
             },
             new()
             {
@@ -82,7 +77,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "08",
                 PrefectureName = "茨城県",
                 PrefectureNameKana = "イバラキケン",
-                PrefectureNameEnglish = "Ibaraki"
+                PrefectureNameRoma = "Ibaraki"
             },
             new()
             {
@@ -90,7 +85,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "09",
                 PrefectureName = "栃木県",
                 PrefectureNameKana = "トチギケン",
-                PrefectureNameEnglish = "Tochigi"
+                PrefectureNameRoma = "Tochigi"
             },
             new()
             {
@@ -98,7 +93,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "10",
                 PrefectureName = "群馬県",
                 PrefectureNameKana = "グンマケン",
-                PrefectureNameEnglish = "Gumma"
+                PrefectureNameRoma = "Gumma"
             },
             new()
             {
@@ -106,7 +101,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "11",
                 PrefectureName = "埼玉県",
                 PrefectureNameKana = "サイタマケン",
-                PrefectureNameEnglish = "Saitama"
+                PrefectureNameRoma = "Saitama"
             },
             new()
             {
@@ -114,7 +109,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "12",
                 PrefectureName = "千葉県",
                 PrefectureNameKana = "チバケン",
-                PrefectureNameEnglish = "Chiba"
+                PrefectureNameRoma = "Chiba"
             },
             new()
             {
@@ -122,7 +117,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "13",
                 PrefectureName = "東京都",
                 PrefectureNameKana = "トウキョウト",
-                PrefectureNameEnglish = "Tokyo"
+                PrefectureNameRoma = "Tokyo"
             },
             new()
             {
@@ -130,7 +125,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "14",
                 PrefectureName = "神奈川県",
                 PrefectureNameKana = "カナガワケン",
-                PrefectureNameEnglish = "Kanagawa"
+                PrefectureNameRoma = "Kanagawa"
             },
             new()
             {
@@ -138,7 +133,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "15",
                 PrefectureName = "新潟県",
                 PrefectureNameKana = "ニイガタケン",
-                PrefectureNameEnglish = "Niigata"
+                PrefectureNameRoma = "Niigata"
             },
             new()
             {
@@ -146,7 +141,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "16",
                 PrefectureName = "富山県",
                 PrefectureNameKana = "トヤマケン",
-                PrefectureNameEnglish = "Toyama"
+                PrefectureNameRoma = "Toyama"
             },
             new()
             {
@@ -154,7 +149,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "17",
                 PrefectureName = "石川県",
                 PrefectureNameKana = "イシカワケン",
-                PrefectureNameEnglish = "Ishikawa"
+                PrefectureNameRoma = "Ishikawa"
             },
             new()
             {
@@ -162,7 +157,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "18",
                 PrefectureName = "福井県",
                 PrefectureNameKana = "フクイケン",
-                PrefectureNameEnglish = "Fukui"
+                PrefectureNameRoma = "Fukui"
             },
             new()
             {
@@ -170,7 +165,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "19",
                 PrefectureName = "山梨県",
                 PrefectureNameKana = "ヤマナシケン",
-                PrefectureNameEnglish = "Yamanashi"
+                PrefectureNameRoma = "Yamanashi"
             },
             new()
             {
@@ -178,7 +173,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "20",
                 PrefectureName = "長野県",
                 PrefectureNameKana = "ナガノケン",
-                PrefectureNameEnglish = "Nagano"
+                PrefectureNameRoma = "Nagano"
             },
             new()
             {
@@ -186,7 +181,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "21",
                 PrefectureName = "岐阜県",
                 PrefectureNameKana = "ギフケン",
-                PrefectureNameEnglish = "Gifu"
+                PrefectureNameRoma = "Gifu"
             },
             new()
             {
@@ -194,7 +189,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "22",
                 PrefectureName = "静岡県",
                 PrefectureNameKana = "シズオカケン",
-                PrefectureNameEnglish = "Shizuoka"
+                PrefectureNameRoma = "Shizuoka"
             },
             new()
             {
@@ -202,7 +197,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "23",
                 PrefectureName = "愛知県",
                 PrefectureNameKana = "アイチケン",
-                PrefectureNameEnglish = "Aichi"
+                PrefectureNameRoma = "Aichi"
             },
             new()
             {
@@ -210,7 +205,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "24",
                 PrefectureName = "三重県",
                 PrefectureNameKana = "ミエケン",
-                PrefectureNameEnglish = "Mie"
+                PrefectureNameRoma = "Mie"
             },
             new()
             {
@@ -218,7 +213,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "25",
                 PrefectureName = "滋賀県",
                 PrefectureNameKana = "シガケン",
-                PrefectureNameEnglish = "Shiga"
+                PrefectureNameRoma = "Shiga"
             },
             new()
             {
@@ -226,7 +221,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "26",
                 PrefectureName = "京都府",
                 PrefectureNameKana = "キョウトフ",
-                PrefectureNameEnglish = "Kyoto"
+                PrefectureNameRoma = "Kyoto"
             },
             new()
             {
@@ -234,7 +229,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "27",
                 PrefectureName = "大阪府",
                 PrefectureNameKana = "オオサカフ",
-                PrefectureNameEnglish = "Osaka"
+                PrefectureNameRoma = "Osaka"
             },
             new()
             {
@@ -242,7 +237,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "28",
                 PrefectureName = "兵庫県",
                 PrefectureNameKana = "ヒョウゴケン",
-                PrefectureNameEnglish = "Hyogo"
+                PrefectureNameRoma = "Hyogo"
             },
             new()
             {
@@ -250,7 +245,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "29",
                 PrefectureName = "奈良県",
                 PrefectureNameKana = "ナラケン",
-                PrefectureNameEnglish = "Nara"
+                PrefectureNameRoma = "Nara"
             },
             new()
             {
@@ -258,7 +253,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "30",
                 PrefectureName = "和歌山県",
                 PrefectureNameKana = "ワカヤマケン",
-                PrefectureNameEnglish = "Wakayama"
+                PrefectureNameRoma = "Wakayama"
             },
             new()
             {
@@ -266,7 +261,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "31",
                 PrefectureName = "鳥取県",
                 PrefectureNameKana = "トットリケン",
-                PrefectureNameEnglish = "Tottori"
+                PrefectureNameRoma = "Tottori"
             },
             new()
             {
@@ -274,7 +269,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "32",
                 PrefectureName = "島根県",
                 PrefectureNameKana = "シマネケン",
-                PrefectureNameEnglish = "Shimane"
+                PrefectureNameRoma = "Shimane"
             },
             new()
             {
@@ -282,7 +277,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "33",
                 PrefectureName = "岡山県",
                 PrefectureNameKana = "オカヤマケン",
-                PrefectureNameEnglish = "Okayama"
+                PrefectureNameRoma = "Okayama"
             },
             new()
             {
@@ -290,7 +285,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "34",
                 PrefectureName = "広島県",
                 PrefectureNameKana = "ヒロシマケン",
-                PrefectureNameEnglish = "Hiroshima"
+                PrefectureNameRoma = "Hiroshima"
             },
             new()
             {
@@ -298,7 +293,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "35",
                 PrefectureName = "山口県",
                 PrefectureNameKana = "ヤマグチケン",
-                PrefectureNameEnglish = "Yamaguchi"
+                PrefectureNameRoma = "Yamaguchi"
             },
             new()
             {
@@ -306,7 +301,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "36",
                 PrefectureName = "徳島県",
                 PrefectureNameKana = "トクシマケン",
-                PrefectureNameEnglish = "Tokushima"
+                PrefectureNameRoma = "Tokushima"
             },
             new()
             {
@@ -314,7 +309,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "37",
                 PrefectureName = "香川県",
                 PrefectureNameKana = "カガワケン",
-                PrefectureNameEnglish = "Kagawa"
+                PrefectureNameRoma = "Kagawa"
             },
             new()
             {
@@ -322,7 +317,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "38",
                 PrefectureName = "愛媛県",
                 PrefectureNameKana = "エヒメケン",
-                PrefectureNameEnglish = "Ehime"
+                PrefectureNameRoma = "Ehime"
             },
             new()
             {
@@ -330,7 +325,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "39",
                 PrefectureName = "高知県",
                 PrefectureNameKana = "コウチケン",
-                PrefectureNameEnglish = "Kochi"
+                PrefectureNameRoma = "Kochi"
             },
             new()
             {
@@ -338,7 +333,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "40",
                 PrefectureName = "福岡県",
                 PrefectureNameKana = "フクオカケン",
-                PrefectureNameEnglish = "Fukuoka"
+                PrefectureNameRoma = "Fukuoka"
             },
             new()
             {
@@ -346,7 +341,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "41",
                 PrefectureName = "佐賀県",
                 PrefectureNameKana = "サガケン",
-                PrefectureNameEnglish = "Saga"
+                PrefectureNameRoma = "Saga"
             },
             new()
             {
@@ -354,7 +349,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "42",
                 PrefectureName = "長崎県",
                 PrefectureNameKana = "ナガサキケン",
-                PrefectureNameEnglish = "Nagasaki"
+                PrefectureNameRoma = "Nagasaki"
             },
             new()
             {
@@ -362,7 +357,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "43",
                 PrefectureName = "熊本県",
                 PrefectureNameKana = "クマモトケン",
-                PrefectureNameEnglish = "Kumamoto"
+                PrefectureNameRoma = "Kumamoto"
             },
             new()
             {
@@ -370,7 +365,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "44",
                 PrefectureName = "大分県",
                 PrefectureNameKana = "オオイタケン",
-                PrefectureNameEnglish = "Oita"
+                PrefectureNameRoma = "Oita"
             },
             new()
             {
@@ -378,7 +373,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "45",
                 PrefectureName = "宮崎県",
                 PrefectureNameKana = "ミヤザキケン",
-                PrefectureNameEnglish = "Miyazaki"
+                PrefectureNameRoma = "Miyazaki"
             },
             new()
             {
@@ -386,7 +381,7 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "46",
                 PrefectureName = "鹿児島県",
                 PrefectureNameKana = "カゴシマケン",
-                PrefectureNameEnglish = "Kagoshima"
+                PrefectureNameRoma = "Kagoshima"
             },
             new()
             {
@@ -394,15 +389,104 @@ public class PrefectureDataService : IPrefectureDataService
                 Code = "47",
                 PrefectureName = "沖縄県",
                 PrefectureNameKana = "オキナワケン",
-                PrefectureNameEnglish = "Okinawa"
+                PrefectureNameRoma = "Okinawa"
             }
-        };
+        ];
+
+    public MtPrefAllDataService()
+    {
+        _prefectures = [.. Prefectures];
+    }
 
     public async Task<IEnumerable<Prefecture>> GetPrefectureDataAsync()
     {
-        _prefectures ??= new List<Prefecture>(Prefectures);
+        _prefectures ??= [.. Prefectures];
 
         await Task.CompletedTask;
         return _prefectures;
+    }
+
+    public bool InsertAllPrefectureData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<Prefecture> data)
+    {
+        if (!data.Any())
+        {
+            return false;
+        }
+
+        try
+        {
+            using var connection = new SqliteConnection(connectionStringBuilder.ConnectionString);
+            try
+            {
+                connection.Open();
+
+                using var tableCmd = connection.CreateCommand();
+
+                tableCmd.Transaction = connection.BeginTransaction();
+                try
+                {
+                    // Create table if not exists.
+                    tableCmd.CommandText = "CREATE TABLE IF NOT EXISTS mt_pref_all (" +
+                        "code TEXT NOT NULL," +
+                        "lg_code TEXT NOT NULL," + // PRIMARY KEY
+                        "pref TEXT NOT NULL," +
+                        "pref_kana TEXT," +
+                        "pref_roma TEXT" +
+                        ")";
+
+                    tableCmd.ExecuteNonQuery();
+
+                    // Insert data
+                    foreach (var hoge in data)
+                    {
+                        var sqlInsertIntoRent = String.Format(
+    "INSERT OR IGNORE INTO mt_pref_all " +
+    "(code, lg_code, pref, pref_kana, pref_roma) " +
+    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')",
+    hoge.Code,
+    hoge.MunicipalityCode,
+    hoge.PrefectureName,
+    hoge.PrefectureNameKana,
+    hoge.PrefectureNameRoma);
+
+                        tableCmd.CommandText = sqlInsertIntoRent;
+
+                        var InsertIntoRentResult = tableCmd.ExecuteNonQuery();
+                    }
+
+                    tableCmd.Transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    tableCmd.Transaction.Rollback();
+
+                    Debug.WriteLine("DB Error: " + ex.Message);
+                }
+            }
+            catch (System.Reflection.TargetInvocationException ex)
+            {
+                Debug.WriteLine("DB Error: " + ex.Message);
+                if (ex.InnerException != null)
+                    throw ex.InnerException;
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                Debug.WriteLine("DB Error: " + ex.Message);
+                if (ex.InnerException != null)
+                    throw ex.InnerException;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("DB Error: " + ex.Message);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("DB Error: " + ex.Message);
+        }
+
+        Debug.WriteLine("Insert Done @InsertAllPrefectureDataAsync in IMtPrefAllDataService");
+
+        return true;
     }
 }

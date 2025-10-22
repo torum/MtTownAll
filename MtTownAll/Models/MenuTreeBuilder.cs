@@ -92,6 +92,8 @@ public partial class MenuTreeBuilder : NodeTree
         };
         Children.Add(nmpc);
 
+        // TODO:
+        /*
         str = resourceLoader.GetString("MenuTreeItem_Test");
         NodeMenuTest nmt = new(str)
         {
@@ -103,5 +105,6 @@ public partial class MenuTreeBuilder : NodeTree
             Parent = this
         };
         Children.Add(nmt);
+        */
     }
 }

@@ -2,11 +2,13 @@
 
 public class Prefecture
 {
+    // 市区町村コード
     public string MunicipalityCode
     {
         get; set;
     } = string.Empty;
 
+    // 都道府県コード
     public string Code
     {
         get; set;
@@ -22,7 +24,7 @@ public class Prefecture
         get; set;
     } = string.Empty;
 
-    public string PrefectureNameEnglish
+    public string PrefectureNameRoma
     {
         get; set;
     } = string.Empty;

@@ -65,8 +65,9 @@ public partial class App : Application
         ConfigureServices((context, services) =>
         {
             // Core Services
-            services.AddSingleton<IPrefectureDataService, PrefectureDataService>();
-            services.AddSingleton<IPostalCodeDataService, PostalCodeDataService>();
+            services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
+            services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
+            services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
             //services.AddSingleton<IDialogService, DialogService>();
 
             // Views and ViewModels

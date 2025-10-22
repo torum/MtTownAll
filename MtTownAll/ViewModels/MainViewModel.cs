@@ -1,17 +1,22 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Data.Sqlite;
+using Microsoft.Windows.Storage.Pickers;
+using MtTownAll.Models;
+using MtTownAll.Services;
+using MtTownAll.Services.Contracts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using MtTownAll.Models;
-using MtTownAll.Services;
-using MtTownAll.Services.Contracts;
+using Windows.Storage;
 
 namespace MtTownAll.ViewModels;
 
@@ -99,7 +104,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #endregion
 
-    #region == Postal Code ==
+    #region == KenAll (Postal Code) ==
 
     private ObservableCollection<PostalCode> _postalCodeSource = [];
     public ObservableCollection<PostalCode> PostalCodeSource
@@ -119,7 +124,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #endregion
 
-    #region == Town All ==
+    #region == MtTownAll ==
 
     private ObservableCollection<Town> _townAllSource = [];
     public ObservableCollection<Town> TownAllSource
@@ -136,6 +141,12 @@ public sealed partial class MainViewModel : ObservableValidator
             OnPropertyChanged(nameof(TownAllSource));
         }
     }
+
+    #endregion
+
+    #region == MtPrefAll ==
+
+    public ObservableCollection<Prefecture> PrefectureSource { get; } = [];
 
     #endregion
 
@@ -170,7 +181,7 @@ public sealed partial class MainViewModel : ObservableValidator
             SetProperty(ref postalCode, value, false);
             //ValidateProperty(PostalCode, nameof(PostalCode));
 
-            if (GetErrors(nameof(PostalCode)).Count() > 0)
+            if (GetErrors(nameof(PostalCode)).Any())
             {
                 PostalCodeErrorMessage = string.Join(", ", GetErrors(nameof(PostalCode)).Select(e => e.ErrorMessage));
                 PostalCodeHasError = true;
@@ -194,8 +205,6 @@ public sealed partial class MainViewModel : ObservableValidator
         set => SetProperty(ref selectedMultiplePostalCodeAddresses, value, false);
     }
 
-    public ObservableCollection<Prefecture> PrefectureSource { get; } = [];
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FullAddress))]
     public partial Prefecture? SelectedPrefecture { get; set; }
@@ -208,13 +217,22 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #endregion
 
-    private readonly IPrefectureDataService _prefectureDataService;
-    private readonly IPostalCodeDataService _postalCodeDataService;
+    // DB
+    private static string DataBaseFilePath => System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + Path.DirectorySeparatorChar + "Address.db";
+    private SqliteConnectionStringBuilder connectionStringBuilder;
 
-    public MainViewModel(IPrefectureDataService prefectureDataService, IPostalCodeDataService postalCodeDataService)
+    // Services
+    private readonly IMtPrefAllDataService _prefectureDataService;
+    private readonly IMtTownAllDataService _townDataService;
+    private readonly IXKenAllDataService _postalCodeDataService;
+
+    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService)
     {
         _prefectureDataService = prefectureDataService;
+        _townDataService = townDataService;
         _postalCodeDataService = postalCodeDataService;
+
+        connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false"); // Set Pooling=false so that the app does not hold a file lock.
 
         PopulatePrefectures();
 
@@ -223,14 +241,15 @@ public sealed partial class MainViewModel : ObservableValidator
 
     private void UpdateErrorMessages(DataErrorsChangedEventArgs arg)
     {
+        Debug.WriteLine($"UpdateErrorMessages {arg}");
+
         if (HasErrors)
             ErrorMessages = "入力項目にエラーがあります。";
         else
             ErrorMessages = string.Empty;
 
-
-        //string message = string.Join(Environment.NewLine, GetErrors().Select(e => e.ErrorMessage));
-        //Debug.WriteLine(message);
+        string message = string.Join(Environment.NewLine, GetErrors().Select(e => e.ErrorMessage));
+        Debug.WriteLine(message);
     }
 
     private async void PopulatePrefectures()
@@ -253,9 +272,12 @@ public sealed partial class MainViewModel : ObservableValidator
 
         PostalCodeReturnedMultipleAddresses = false;
 
-        var data = await _postalCodeDataService.GetPostalCodeDataAsync(value);
+        // TODO:
+        connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
 
-        if (data.Count() <= 0)
+        var data = await _postalCodeDataService.SelectAddressesByPostalCodeAsync(connectionStringBuilder, value);
+
+        if (!data.Any())
         {
             PostalCodeReturnedMultipleAddresses = false;
 
@@ -289,4 +311,268 @@ public sealed partial class MainViewModel : ObservableValidator
         }
 
     }
+
+    #region == Commands ==
+
+    [RelayCommand]
+    public async Task FileKenAllOpen()
+    {
+        PostalCodeSource.Clear();
+
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
+
+        // x-ken-all.csv
+        filePicker.FileTypeFilter.Add(".csv");
+        filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+
+        var file = await filePicker.PickSingleFileAsync();
+
+        if (file == null)
+        {
+            return;
+        }
+        
+        IsWorking = true;
+
+        var kenAll = await Task.Run(() => _postalCodeDataService.ParseXKenAllCsv(file.Path), App.MainWnd.Cts.Token);
+
+        PostalCodeSource = kenAll;
+        
+        IsWorking = false;
+
+        InsertAllIntoXKenAllTableCommand.NotifyCanExecuteChanged();
+    }
+
+
+    [RelayCommand]
+    public async Task FileTownAllOpen()
+    {
+        TownAllSource.Clear();
+
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
+
+        // mt_town_all.csv
+        filePicker.FileTypeFilter.Add(".csv");
+        filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+
+        var file = await filePicker.PickSingleFileAsync();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        IsWorking = true;
+
+        var townAll = await Task.Run(() => _townDataService.ParseMtTownAllCsv(file.Path), App.MainWnd.Cts.Token);
+
+        TownAllSource = townAll;
+
+        IsWorking = false;
+
+        InsertAllIntoMtTownAllTableCommand.NotifyCanExecuteChanged();
+    }
+
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoXKenAllTable))]
+    public async Task InsertAllIntoXKenAllTable()
+    {
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "x-ken-all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+    }
+
+    private bool CanInsertAllIntoXKenAllTable()
+    {
+        if (PostalCodeSource is null)
+        {
+            return false;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return false;   
+        }
+
+        return true;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoMtPrefAllTable))]
+    public async Task InsertAllIntoMtPrefAllTable()
+    {
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        if (PrefectureSource is null)
+        {
+            return;
+        }
+
+        if (PrefectureSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "mt_pref_all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _prefectureDataService.InsertAllPrefectureData(connectionStringBuilder, PrefectureSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @InsertAllIntoMtPrefAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+    }
+
+    private bool CanInsertAllIntoMtPrefAllTable()
+    {
+        if (PrefectureSource is null)
+        {
+            return false;
+        }
+
+        if (PrefectureSource.Count <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoMtTownAllTable))]
+    public async Task InsertAllIntoMtTownAllTable()
+    {
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        if (TownAllSource is null)
+        {
+            return;
+        }
+
+        if (TownAllSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "mt_town_all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _townDataService.InsertAllTownData(connectionStringBuilder, TownAllSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @InsertAllIntoMtTownAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+    }
+
+    private bool CanInsertAllIntoMtTownAllTable()
+    {
+        if (TownAllSource is null)
+        {
+            return false;
+        }
+
+        if (TownAllSource.Count <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    #endregion
 }
