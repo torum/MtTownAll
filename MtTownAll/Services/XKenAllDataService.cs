@@ -53,8 +53,8 @@ public class XKenAllDataService : IXKenAllDataService
                     Debug.WriteLine($"if (csv.ColumnCount != 15) @ParseXKenAllCsv {csv.ColumnCount}");
 
                     // TODO: return error code or msg.
-                    //return;
-                    continue;
+                    return kenAll;
+                    //continue;
                 }
 
                 if (App.MainWnd is null)
@@ -128,7 +128,7 @@ public class XKenAllDataService : IXKenAllDataService
                     // Create table if not exists.
                     tableCmd.CommandText = "CREATE TABLE IF NOT EXISTS x_ken_all (" +
                         "municipality_code TEXT NOT NULL," +
-                        "postal_code TEXT NOT NULL," + // PRIMARY KEY
+                        "postal_code TEXT NOT NULL," + 
                         "prefecture_name TEXT NOT NULL," +
                         "sikuchouson_name TEXT," +
                         "chouiki_name TEXT" +

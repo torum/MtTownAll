@@ -102,6 +102,106 @@ public sealed partial class MainViewModel : ObservableValidator
         }
     }
 
+    private string _infoBarInfoTitleXKenAll = "";
+    public string InfoBarInfoTitleXKenAll
+    {
+        get
+        {
+            return _infoBarInfoTitleXKenAll;
+        }
+        set
+        {
+            _infoBarInfoTitleXKenAll = value;
+            OnPropertyChanged(nameof(InfoBarInfoTitleXKenAll));
+        }
+    }
+
+    private string _infoBarInfoMessageXKenAll = "";
+    public string InfoBarInfoMessageXKenAll
+    {
+        get
+        {
+            return _infoBarInfoMessageXKenAll;
+        }
+        set
+        {
+            _infoBarInfoMessageXKenAll = value;
+            OnPropertyChanged(nameof(InfoBarInfoMessageXKenAll));
+        }
+    }
+
+    private bool _isShowInfoWindowXKenAll;
+    public bool IsShowInfoWindowXKenAll
+
+    {
+        get { return _isShowInfoWindowXKenAll; }
+        set
+        {
+            if (_isShowInfoWindowXKenAll == value)
+                return;
+
+            _isShowInfoWindowXKenAll = value;
+
+            if (!_isShowInfoWindowXKenAll)
+            {
+                InfoBarInfoTitleXKenAll = string.Empty;
+                InfoBarInfoMessageXKenAll = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsShowInfoWindowXKenAll));
+        }
+    }
+
+    private string _infoBarInfoTitleMtTownAll = "";
+    public string InfoBarInfoTitleMtTownAll
+    {
+        get
+        {
+            return _infoBarInfoTitleMtTownAll;
+        }
+        set
+        {
+            _infoBarInfoTitleMtTownAll = value;
+            OnPropertyChanged(nameof(InfoBarInfoTitleMtTownAll));
+        }
+    }
+
+    private string _infoBarInfoMessageMtTownAll = "";
+    public string InfoBarInfoMessageMtTownAll
+    {
+        get
+        {
+            return _infoBarInfoMessageMtTownAll;
+        }
+        set
+        {
+            _infoBarInfoMessageMtTownAll = value;
+            OnPropertyChanged(nameof(InfoBarInfoMessageMtTownAll));
+        }
+    }
+
+    private bool _isShowInfoWindowMtTownAll;
+    public bool IsShowInfoWindowMtTownAll
+
+    {
+        get { return _isShowInfoWindowMtTownAll; }
+        set
+        {
+            if (_isShowInfoWindowMtTownAll == value)
+                return;
+
+            _isShowInfoWindowMtTownAll = value;
+
+            if (!_isShowInfoWindowMtTownAll)
+            {
+                InfoBarInfoTitleMtTownAll = string.Empty;
+                InfoBarInfoMessageMtTownAll = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsShowInfoWindowMtTownAll));
+        }
+    }
+
     #endregion
 
     #region == KenAll (Postal Code) ==
@@ -319,13 +419,14 @@ public sealed partial class MainViewModel : ObservableValidator
     {
         PostalCodeSource.Clear();
 
+        IsShowInfoWindowXKenAll = false;
+
         if (App.MainWnd is null)
         {
             return;
         }
 
         var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
-
         // x-ken-all.csv
         filePicker.FileTypeFilter.Add(".csv");
         filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
@@ -339,20 +440,49 @@ public sealed partial class MainViewModel : ObservableValidator
         
         IsWorking = true;
 
-        var kenAll = await Task.Run(() => _postalCodeDataService.ParseXKenAllCsv(file.Path), App.MainWnd.Cts.Token);
+        try
+        {
+            var kenAll = await Task.Run(() => _postalCodeDataService.ParseXKenAllCsv(file.Path), App.MainWnd.Cts.Token);
 
-        PostalCodeSource = kenAll;
-        
-        IsWorking = false;
+            PostalCodeSource = kenAll;
+
+            if (kenAll.Count == 0)
+            {
+                InfoBarInfoTitleXKenAll = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageXKenAll = "選択したファイルが「x-ken-all.csv」かどうか確認してください。";
+                IsShowInfoWindowXKenAll = true;
+            }
+        }
+        catch (CsvHelper.MissingFieldException ex)
+        {
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileKenAllOpen {ex}");
+
+            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageXKenAll = "カラム数が違います。選択したファイルが「x-ken-all.csv」かどうか確認してください。";
+            IsShowInfoWindowXKenAll = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception @FileKenAllOpen {ex}");
+
+            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageXKenAll = $"{ex}";
+            IsShowInfoWindowXKenAll = true;
+        }
+        finally
+        {
+            IsWorking = false;
+        }
 
         InsertAllIntoXKenAllTableCommand.NotifyCanExecuteChanged();
     }
-
 
     [RelayCommand]
     public async Task FileTownAllOpen()
     {
         TownAllSource.Clear();
+
+        IsShowInfoWindowMtTownAll = false;
 
         if (App.MainWnd is null)
         {
@@ -360,7 +490,6 @@ public sealed partial class MainViewModel : ObservableValidator
         }
 
         var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
-
         // mt_town_all.csv
         filePicker.FileTypeFilter.Add(".csv");
         filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
@@ -374,15 +503,41 @@ public sealed partial class MainViewModel : ObservableValidator
 
         IsWorking = true;
 
-        var townAll = await Task.Run(() => _townDataService.ParseMtTownAllCsv(file.Path), App.MainWnd.Cts.Token);
+        try
+        {
+            var townAll = await Task.Run(() => _townDataService.ParseMtTownAllCsv(file.Path), App.MainWnd.Cts.Token);
 
-        TownAllSource = townAll;
+            TownAllSource = townAll;
 
-        IsWorking = false;
+            if (townAll.Count == 0)
+            {
+                InfoBarInfoTitleMtTownAll = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageMtTownAll = "選択したファイルが「mt_town_all.csv」かどうか確認してください。";
+                IsShowInfoWindowMtTownAll = true;
+            }
+        }
+        catch (CsvHelper.MissingFieldException ex)
+        {
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileTownAllOpen {ex}");
+            InfoBarInfoTitleMtTownAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageMtTownAll = "カラム数が違います。選択したファイルが「mt_town_all.csv」かどうか確認してください。";
+            IsShowInfoWindowMtTownAll = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception @FileTownAllOpen {ex}");
+
+            InfoBarInfoTitleMtTownAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageMtTownAll = $"{ex}";
+            IsShowInfoWindowMtTownAll = true;
+        }
+        finally
+        {
+            IsWorking = false;
+        }
 
         InsertAllIntoMtTownAllTableCommand.NotifyCanExecuteChanged();
     }
-
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoXKenAllTable))]
     public async Task InsertAllIntoXKenAllTable()

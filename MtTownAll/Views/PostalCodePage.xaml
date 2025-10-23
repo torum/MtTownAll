@@ -14,8 +14,8 @@
     <Grid Margin="0,48,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <CommandBar DefaultLabelPosition="Right">
@@ -34,7 +34,11 @@
 
         </StackPanel>
 
-        <Grid Grid.Row="1" Margin="48,12,0,12">
+        <Grid Grid.Row="1">
+            <InfoBar Grid.Row="0" Title="{x:Bind ViewModel.InfoBarInfoTitleXKenAll, Mode=OneWay}" IsOpen="{x:Bind ViewModel.IsShowInfoWindowXKenAll, Mode=TwoWay}" IsIconVisible="True" IsClosable="True" Severity="Warning" Message="{x:Bind ViewModel.InfoBarInfoMessageXKenAll, Mode=OneWay}" />
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="48,12,0,12">
             <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.PostalCodeSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
                 <controls:DataGrid.Resources>
                     <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />

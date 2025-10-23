@@ -54,8 +54,8 @@ public class MtTownAllDataService : IMtTownAllDataService
                     Debug.WriteLine($"if (csv.ColumnCount != 38) @ParseMtTownAllCsv {csv.ColumnCount}");
 
                     // TODO: return error code or msg.
-                    //return;
-                    continue;
+                    return townAll;
+                    //continue;
                 }
 
                 if (App.MainWnd is null)

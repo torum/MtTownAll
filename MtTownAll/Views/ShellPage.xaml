@@ -85,7 +85,7 @@
 
                 <Grid>
                     <!-- NavigationView content frame -->
-                    <Frame x:Name="NavigationFrame"/>
+                    <Frame x:Name="NavigationFrame" Grid.Row="1"/>
                 </Grid>
             </NavigationView>
 
