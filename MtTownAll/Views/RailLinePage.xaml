@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MtTownAll.Views.RailLinePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MtTownAll.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+        xmlns:model="using:MtTownAll.Models"
+        NavigationCacheMode="Required"
+    mc:Ignorable="d">
+
+    <Grid Margin="0,48,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <CommandBar DefaultLabelPosition="Right">
+                <AppBarButton Icon="OpenFile" Label="Select File" Command="{x:Bind ViewModel.FileRailLineOpenCommand}"></AppBarButton>
+
+                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB" Command="{x:Bind ViewModel.InsertAllIntoRailLineTableCommand}"></AppBarButton>
+
+                <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
+                <CommandBar.Content>
+                    <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
+                        <TextBlock Text="路線データ" Style="{ThemeResource TitleTextBlockStyle}" />
+                        <HyperlinkButton NavigateUri="https://ekidata.jp/" Margin="12,0,0,0" FontWeight="SemiBold" VerticalAlignment="Bottom">lineyyyymmddfree.csv</HyperlinkButton>
+                    </StackPanel>
+                </CommandBar.Content>
+            </CommandBar>
+
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <InfoBar Grid.Row="0" Title="{x:Bind ViewModel.InfoBarInfoTitleRailLine, Mode=OneWay}" IsOpen="{x:Bind ViewModel.IsShowInfoWindowRailLine, Mode=TwoWay}" IsIconVisible="True" IsClosable="True" Severity="Warning" Message="{x:Bind ViewModel.InfoBarInfoMessageRailLine, Mode=OneWay}" />
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="48,12,0,12">
+            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.RailLineSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
+                <controls:DataGrid.Resources>
+                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
+                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
+                </controls:DataGrid.Resources>
+                <controls:DataGrid.Columns>
+
+                    <controls:DataGridTemplateColumn Header="路線コード">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineCode}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="路線名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineName}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <!-- 「0:その他　1:新幹線 2:一般 3:地下鉄 4:市電・路面電車 5:モノレール・新交通」 -->
+                    <!--
+                    <controls:DataGridTemplateColumn Header="路線区分(line_type)7">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineType}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    -->
+
+                    <controls:DataGridTemplateColumn Header="経度">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineLon}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="緯度">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineLat}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Gmap倍率">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineMapZoom}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="ステータス">
+                        <!-- 「0:運用中　1:運用前　2:廃止」 -->
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineStatus}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="ソートキー">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:RailLine">
+                                <TextBlock Text="{x:Bind LineSort}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
+        </Grid>
+
+    </Grid>
+</Page>

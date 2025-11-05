@@ -59,6 +59,12 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\RailStationPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\RailLinePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\PostalCodePage.xaml">
       <SubType>Designer</SubType>
     </Page>

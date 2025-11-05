@@ -18,37 +18,38 @@ using System.Threading.Tasks;
 
 namespace MtTownAll.Services;
 
-public class XKenAllDataService : IXKenAllDataService
+public class RailLineDataService : IRailLineDataService
 {
-    public ObservableCollection<PostalCode> ParseXKenAllCsv(string filePath)
+    public ObservableCollection<RailLine> ParseRailLineCsv(string filePath)
     {
-        var kenAll = new ObservableCollection<PostalCode>();
+        var rline = new ObservableCollection<RailLine>();
 
         if (string.IsNullOrEmpty(filePath))
         {
-            return kenAll;
+            return rline;
         }
 
         var config = new CsvConfiguration(CultureInfo.CurrentCulture)
         {
-            HasHeaderRecord = false,
-            Encoding = Encoding.GetEncoding("shift_jis")
+            HasHeaderRecord = true,
+            Encoding = Encoding.UTF8
         };
-        using var reader = new StreamReader(filePath, Encoding.GetEncoding("shift_jis"));
+        
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
         using (var csv = new CsvReader(reader, config))
         {
-            csv.Context.RegisterClassMap<PostalCodeClassMapper>();
+            csv.Context.RegisterClassMap<RailLineClassMapper>();
 
-            var records = csv.GetRecords<PostalCode>();
+            var records = csv.GetRecords<RailLine>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 15)
+                if (csv.ColumnCount != 13)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 15) @ParseXKenAllCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.ColumnCount != 13) @ParseRailLineCsv {csv.ColumnCount}");
 
                     // TODO: return error code or msg.
-                    return kenAll;
+                    return rline;
                     //continue;
                 }
 
@@ -59,48 +60,54 @@ public class XKenAllDataService : IXKenAllDataService
                 
                 if (App.MainWnd.Cts.IsCancellationRequested)
                 {
-                    Debug.WriteLine("IsCancellationRequested in foreach @ParseKenAllCsv");
+                    Debug.WriteLine("IsCancellationRequested in foreach @ParseRailLineCsv");
                     break;
                 }
 
-                var obj = new PostalCode
+                var obj = new RailLine
                 {
-                    PrefectureName = record.PrefectureName,
-                    ChouikiName = record.ChouikiName,
-                    SikuchousonName = record.SikuchousonName,
-                    MunicipalityCode = record.MunicipalityCode,
-                    Code = record.Code
+                    LineCode = record.LineCode,
+                    LineName = record.LineName,
+                    //LineType = record.LineType,
+                    LineLon = record.LineLon,
+                    LineLat = record.LineLat,
+                    LineMapZoom = record.LineMapZoom,
+                    LineStatus = record.LineStatus,
+                    LineSort = record.LineSort
                 };
 
-                kenAll.Add(obj);
+                rline.Add(obj);
             }
         }
 
-        Debug.WriteLine("Open Done @ParseXKenAllCsv in IXKenAllDataService");
-
-        return kenAll;
+        Debug.WriteLine("Open Done @ParseRailLineCsv in IRailLineDataService");
+        
+        return rline;
     }
 
-    class PostalCodeMapper : CsvHelper.Configuration.ClassMap<PostalCode>
+    class RailLineMapper : CsvHelper.Configuration.ClassMap<RailLine>
     {
-        public PostalCodeMapper()
+        public RailLineMapper()
         {
             AutoMap(CultureInfo.CurrentCulture);
         }
     }
 
-    class PostalCodeClassMapper : CsvHelper.Configuration.ClassMap<PostalCode>
+    class RailLineClassMapper : CsvHelper.Configuration.ClassMap<RailLine>
     {
-        public PostalCodeClassMapper()
+        public RailLineClassMapper()
         {
-            Map(x => x.MunicipalityCode).Index(0);
-            Map(x => x.Code).Index(2);
-            Map(x => x.PrefectureName).Index(6);
-            Map(x => x.SikuchousonName).Index(7);
-            Map(x => x.ChouikiName).Index(8);
+            Map(x => x.LineCode).Index(0);
+            Map(x => x.LineName).Index(2);
+            //Map(x => x.LineType).Index(7);
+            Map(x => x.LineLon).Index(8);
+            Map(x => x.LineLat).Index(9);
+            Map(x => x.LineMapZoom).Index(10);
+            Map(x => x.LineStatus).Index(11);
+            Map(x => x.LineSort).Index(12);
         }
     }
-
+    /*
     public bool InsertAllXKenAllData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<PostalCode> data)
     {
         if (!data.Any())
@@ -265,5 +272,5 @@ public class XKenAllDataService : IXKenAllDataService
         await Task.CompletedTask;
         return postalCodes;
     }
-
+    */
 }

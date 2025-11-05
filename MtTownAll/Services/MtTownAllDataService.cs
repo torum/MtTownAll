@@ -20,11 +20,6 @@ namespace MtTownAll.Services;
 
 public class MtTownAllDataService : IMtTownAllDataService
 {
-    public MtTownAllDataService()
-    {
-        //
-    }
-
     public ObservableCollection<Town> ParseMtTownAllCsv(string filePath)
     {
         var townAll = new ObservableCollection<Town>();
@@ -104,12 +99,6 @@ public class MtTownAllDataService : IMtTownAllDataService
 
     class TownCodeClassMapper : CsvHelper.Configuration.ClassMap<Town>
     {
-        /*
-        lg_code,machiaza_id,machiaza_type,pref,pref_kana,pref_roma,county,county_kana,county_roma,city,city_kana,city_roma,ward,ward_kana,ward_roma,oaza_cho,oaza_cho_kana,oaza_cho_roma,chome,chome_kana,chome_number,koaza,koaza_kana,koaza_roma,machiaza_dist,rsdt_addr_flg,rsdt_addr_mtd_code,oaza_cho_aka_flg,koaza_aka_code,oaza_cho_gsi_uncmn,koaza_gsi_uncmn,status_flg,wake_num_flg,efct_date,ablt_date,src_code,post_code,remarks
-        011011,0001001,2,北海道,ホッカイドウ,Hokkaido,,,,札幌市,サッポロシ,Sapporo-shi,中央区,チュウオウク,Chuo-ku,旭ケ丘,アサヒガオカ,Asahigaoka,１丁目,１チョウメ,1,,,,,1,1,0,0,0,0,1,1,1947-04-17,,0,,
-        132241,0013001,2,東京都,トウキョウト,Tokyo,,,,多摩市,タマシ,Tama-shi,,,,聖ヶ丘,ヒジリガオカ,,１丁目,１チョウメ,1,,,,,0,0,0,0,0,0,1,1,1947-04-17,,0,,
-        */
-
         public TownCodeClassMapper()
         {
             Map(x => x.MunicipalityCode).Index(0);

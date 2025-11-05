@@ -43,98 +43,8 @@ public sealed partial class ShellPage : Page
     public void CallMeWhenMainWindowIsReady(MainWindow wnd)
     {
         wnd.SetTitleBar(AppTitleBar);
-
-        //SetRegionsForCustomTitleBar();
-
-        // Do this after everything is initilized even App.MainWnd in app.xaml.cs.
-        //ViewModel.StartMPC(this.XamlRoot);
     }
 
-    private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        // This does not allways fire. We might need to use diffrent grid and use navigated event.
-        // Update interactive regions (for backbutton) if the size of the window changes.
-        //SetRegionsForCustomTitleBar();
-    }
-
-    private void SetRegionsForCustomTitleBar()
-    {
-        var m_AppWindow = App.MainWnd?.AppWindow;
-
-        if (m_AppWindow is null)
-        {
-            return;
-        }
-
-        if (App.MainWnd?.ExtendsContentIntoTitleBar != true)
-        {
-            return;
-        }
-
-        var scaleAdjustment = AppTitleBar.XamlRoot.RasterizationScale;
-
-        //
-        /*
-        GeneralTransform transform = this.SearchBox.TransformToVisual(null);
-        Rect bounds = transform.TransformBounds(new Rect(0, 0,
-                                                         this.SearchBox.ActualWidth,
-                                                         this.SearchBox.ActualHeight));
-        Windows.Graphics.RectInt32 SearchBoxRect = GetRect(bounds, scaleAdjustment);
-
-        GeneralTransform transform = this.DummyButton.TransformToVisual(null);
-        Rect bounds = transform.TransformBounds(new Rect(0, 0,
-                                                         this.DummyButton.ActualWidth,
-                                                         this.DummyButton.ActualHeight));
-        Windows.Graphics.RectInt32 DummyButtonRect = GetRect(bounds, scaleAdjustment);
-        */
-
-
-        // Settings button
-        var transform1 = this.SettingsButton.TransformToVisual(null);
-        var bounds1 = transform1.TransformBounds(new Rect(0, 0,
-                                                         this.SettingsButton.ActualWidth,
-                                                         this.SettingsButton.ActualHeight));
-        Windows.Graphics.RectInt32 SettingsButton = GetRect(bounds1, scaleAdjustment);
-
-        /*
-        // Back button
-        double width = this.BackButton.Width;//ActualWidth won't work in certain cases.
-        double height = this.BackButton.Height;//ActualHeight won't work in certain cases.
-
-        if (this.BackButton.Visibility != Visibility.Visible)
-        {
-            //Debug.WriteLine("BackButton.Visibility != Visibility.Visible");
-            width = 0;
-            height = 0;
-        }
-
-        GeneralTransform transform = this.BackButton.TransformToVisual(null);
-        Rect bounds = transform.TransformBounds(new Rect(0, 0,
-                                                    width,
-                                                    height));
-        Windows.Graphics.RectInt32 BackButtonRect = GetRect(bounds, scaleAdjustment);
-
-        */
-        //
-        //var rectArray = new Windows.Graphics.RectInt32[] { SearchBoxRect, BackButtonRect };
-        //var rectArray = new Windows.Graphics.RectInt32[] { BackButtonRect, SettingsButton };
-        var rectArray = new Windows.Graphics.RectInt32[] { SettingsButton };
-
-
-        InputNonClientPointerSource nonClientInputSrc =
-            InputNonClientPointerSource.GetForWindowId(m_AppWindow.Id);
-        nonClientInputSrc.SetRegionRects(NonClientRegionKind.Passthrough, rectArray);
-    }
-
-    private static Windows.Graphics.RectInt32 GetRect(Rect bounds, double scale)
-    {
-        return new Windows.Graphics.RectInt32(
-            _X: (int)Math.Round(bounds.X * scale),
-            _Y: (int)Math.Round(bounds.Y * scale),
-            _Width: (int)Math.Round(bounds.Width * scale),
-            _Height: (int)Math.Round(bounds.Height * scale)
-        );
-    }
 
     private void NaviView_Loaded(object sender, RoutedEventArgs e)
     {
@@ -142,10 +52,7 @@ public sealed partial class ShellPage : Page
         {
             _currentPage = typeof(TestPage);
             var queuePage = ViewModel.MainMenuItems.FirstOrDefault();
-            if (queuePage != null)
-            {
-                queuePage.Selected = true;
-            }
+            queuePage?.Selected = true;
         }
     }
 
@@ -160,17 +67,6 @@ public sealed partial class ShellPage : Page
             }
             return;
         }
-
-        /*
-
-
-        if (_currentPage is null)
-        {
-            return;
-        }
-        ///
-
-        */
     }
 
     private void NaviView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -231,6 +127,30 @@ public sealed partial class ShellPage : Page
             if (this.NavigationFrame.Navigate(typeof(PostalCodePage), this.NavigationFrame, args.RecommendedNavigationTransitionInfo))
             {
                 _currentPage = typeof(PostalCodePage);
+                vm.SelectedNodeMenu = args.SelectedItem as NodeTree;
+            }
+        }
+        else if (args.SelectedItem is NodeMenuRailLine)
+        {
+            if (_currentPage == typeof(RailLinePage))
+            {
+                return;
+            }
+            if (this.NavigationFrame.Navigate(typeof(RailLinePage), this.NavigationFrame, args.RecommendedNavigationTransitionInfo))
+            {
+                _currentPage = typeof(RailLinePage);
+                vm.SelectedNodeMenu = args.SelectedItem as NodeTree;
+            }
+        }
+        else if (args.SelectedItem is NodeMenuRailStation)
+        {
+            if (_currentPage == typeof(RailStationPage))
+            {
+                return;
+            }
+            if (this.NavigationFrame.Navigate(typeof(RailStationPage), this.NavigationFrame, args.RecommendedNavigationTransitionInfo))
+            {
+                _currentPage = typeof(RailStationPage);
                 vm.SelectedNodeMenu = args.SelectedItem as NodeTree;
             }
         }

@@ -91,6 +91,14 @@ public sealed partial class MainViewModel : ObservableValidator
             {
                 //
             }
+            else if (value is NodeMenuRailLine)
+            {
+                //
+            }
+            else if (value is NodeMenuRailStation)
+            {
+                //
+            }
             else if (value is NodeMenu)
             {
                 if (value.Name != "root")
@@ -102,6 +110,11 @@ public sealed partial class MainViewModel : ObservableValidator
         }
     }
 
+    #endregion
+
+    #region == InfoBars ==
+
+    //
     private string _infoBarInfoTitleXKenAll = "";
     public string InfoBarInfoTitleXKenAll
     {
@@ -152,6 +165,7 @@ public sealed partial class MainViewModel : ObservableValidator
         }
     }
 
+    //
     private string _infoBarInfoTitleMtTownAll = "";
     public string InfoBarInfoTitleMtTownAll
     {
@@ -202,6 +216,112 @@ public sealed partial class MainViewModel : ObservableValidator
         }
     }
 
+    //
+    private string _infoBarInfoTitleRailLine = "";
+    public string InfoBarInfoTitleRailLine
+    {
+        get
+        {
+            return _infoBarInfoTitleRailLine;
+        }
+        set
+        {
+            _infoBarInfoTitleRailLine = value;
+            OnPropertyChanged(nameof(InfoBarInfoTitleRailLine));
+        }
+    }
+
+    private string _infoBarInfoMessageRailLine = "";
+    public string InfoBarInfoMessageRailLine
+    {
+        get
+        {
+            return _infoBarInfoMessageRailLine;
+        }
+        set
+        {
+            _infoBarInfoMessageRailLine = value;
+            OnPropertyChanged(nameof(InfoBarInfoMessageRailLine));
+        }
+    }
+
+    private bool _isShowInfoWindowRailLine;
+    public bool IsShowInfoWindowRailLine
+
+    {
+        get { return _isShowInfoWindowRailLine; }
+        set
+        {
+            if (_isShowInfoWindowRailLine == value)
+                return;
+
+            _isShowInfoWindowRailLine = value;
+
+            if (!_isShowInfoWindowRailLine)
+            {
+                InfoBarInfoTitleRailLine = string.Empty;
+                InfoBarInfoMessageRailLine = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsShowInfoWindowRailLine));
+        }
+    }
+
+    //
+    private string _infoBarInfoTitleRailStation = "";
+    public string InfoBarInfoTitleRailStation
+    {
+        get
+        {
+            return _infoBarInfoTitleRailStation;
+        }
+        set
+        {
+            _infoBarInfoTitleRailStation = value;
+            OnPropertyChanged(nameof(InfoBarInfoTitleRailStation));
+        }
+    }
+
+    private string _infoBarInfoMessageRailStation = "";
+    public string InfoBarInfoMessageRailStation
+    {
+        get
+        {
+            return _infoBarInfoMessageRailStation;
+        }
+        set
+        {
+            _infoBarInfoMessageRailStation = value;
+            OnPropertyChanged(nameof(InfoBarInfoMessageRailStation));
+        }
+    }
+
+    private bool _isShowInfoWindowRailStation;
+    public bool IsShowInfoWindowRailStation
+
+    {
+        get { return _isShowInfoWindowRailStation; }
+        set
+        {
+            if (_isShowInfoWindowRailStation == value)
+                return;
+
+            _isShowInfoWindowRailStation = value;
+
+            if (!_isShowInfoWindowRailStation)
+            {
+                InfoBarInfoTitleRailStation = string.Empty;
+                InfoBarInfoMessageRailStation = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsShowInfoWindowRailStation));
+        }
+    }
+
+
+
+
+
     #endregion
 
     #region == KenAll (Postal Code) ==
@@ -247,6 +367,46 @@ public sealed partial class MainViewModel : ObservableValidator
     #region == MtPrefAll ==
 
     public ObservableCollection<Prefecture> PrefectureSource { get; } = [];
+
+    #endregion
+
+    #region == RailLine ==
+
+    private ObservableCollection<RailLine> _railLineSource = [];
+    public ObservableCollection<RailLine> RailLineSource
+    {
+        get => _railLineSource;
+        set
+        {
+            if (_railLineSource == value)
+            {
+                return;
+            }
+
+            _railLineSource = value;
+            OnPropertyChanged(nameof(RailLineSource));
+        }
+    }
+
+    #endregion
+
+    #region == RailStation ==
+
+    private ObservableCollection<RailStation> _railStationeSource = [];
+    public ObservableCollection<RailStation> RailStationSource
+    {
+        get => _railStationeSource;
+        set
+        {
+            if (_railStationeSource == value)
+            {
+                return;
+            }
+
+            _railStationeSource = value;
+            OnPropertyChanged(nameof(RailStationSource));
+        }
+    }
 
     #endregion
 
@@ -325,18 +485,23 @@ public sealed partial class MainViewModel : ObservableValidator
     private readonly IMtPrefAllDataService _prefectureDataService;
     private readonly IMtTownAllDataService _townDataService;
     private readonly IXKenAllDataService _postalCodeDataService;
+    private readonly IRailLineDataService _railLineDataService;
+    private readonly IRailStationDataService _railStationDataService;
 
-    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService)
+    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
     {
         _prefectureDataService = prefectureDataService;
         _townDataService = townDataService;
         _postalCodeDataService = postalCodeDataService;
+        _railLineDataService = railLineDataService;
+        _railStationDataService = railStationDataService;
 
         connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false"); // Set Pooling=false so that the app does not hold a file lock.
 
         PopulatePrefectures();
 
         ErrorsChanged += (sender, arg) => { this.UpdateErrorMessages(arg); };
+        _railStationDataService = railStationDataService;
     }
 
     private void UpdateErrorMessages(DataErrorsChangedEventArgs arg)
@@ -349,6 +514,7 @@ public sealed partial class MainViewModel : ObservableValidator
             ErrorMessages = string.Empty;
 
         string message = string.Join(Environment.NewLine, GetErrors().Select(e => e.ErrorMessage));
+
         Debug.WriteLine(message);
     }
 
@@ -539,6 +705,133 @@ public sealed partial class MainViewModel : ObservableValidator
         InsertAllIntoMtTownAllTableCommand.NotifyCanExecuteChanged();
     }
 
+    [RelayCommand]
+    public async Task FileRailLineOpen()
+    {
+        RailLineSource.Clear();
+
+        IsShowInfoWindowRailLine = false;
+
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
+
+        filePicker.FileTypeFilter.Add(".csv");
+        filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+
+        var file = await filePicker.PickSingleFileAsync();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        IsWorking = true;
+
+        try
+        {
+            var rline = await Task.Run(() => _railLineDataService.ParseRailLineCsv(file.Path), App.MainWnd.Cts.Token);
+
+            RailLineSource = rline;
+
+            if (rline.Count == 0)
+            {
+                InfoBarInfoTitleRailLine = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageRailLine = "選択したファイルが「lineyyyymmddfree.csv」かどうか確認してください。";
+                IsShowInfoWindowRailLine = true;
+            }
+        }
+        catch (CsvHelper.MissingFieldException ex)
+        {
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileRailLineOpen {ex}");
+
+            InfoBarInfoTitleRailLine = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageRailLine = "カラム数が違います。選択したファイルが「lineyyyymmddfree.csv」かどうか確認してください。";
+            IsShowInfoWindowRailLine = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception @FileRailLineOpen {ex}");
+
+            InfoBarInfoTitleRailLine = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageRailLine = $"{ex}";
+            IsShowInfoWindowRailLine = true;
+        }
+        finally
+        {
+            IsWorking = false;
+        }
+
+        InsertAllIntoRailLineTableCommand.NotifyCanExecuteChanged();
+    }
+
+    [RelayCommand]
+    public async Task FileRailStataionOpen()
+    {
+        RailStationSource.Clear();
+
+        IsShowInfoWindowRailStation = false;
+
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
+
+        filePicker.FileTypeFilter.Add(".csv");
+        filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+
+        var file = await filePicker.PickSingleFileAsync();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        IsWorking = true;
+
+        try
+        {
+            var rStation = await Task.Run(() => _railStationDataService.ParseRailStationCsv(file.Path), App.MainWnd.Cts.Token);
+
+            RailStationSource = rStation;
+
+            if (rStation.Count == 0)
+            {
+                InfoBarInfoTitleRailStation = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageRailStation = "選択したファイルが「stationyyyymmddfree.csv」かどうか確認してください。";
+                IsShowInfoWindowRailStation = true;
+            }
+        }
+        catch (CsvHelper.MissingFieldException ex)
+        {
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileRailStationOpen {ex}");
+
+            InfoBarInfoTitleRailLine = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageRailLine = "カラム数が違います。選択したファイルが「stationyyyymmddfree.csv」かどうか確認してください。";
+            IsShowInfoWindowRailLine = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception @FileRailStationOpen {ex}");
+
+            InfoBarInfoTitleRailStation = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageRailStation = $"{ex}";
+            IsShowInfoWindowRailStation = true;
+        }
+        finally
+        {
+            IsWorking = false;
+        }
+
+        InsertAllIntoRailStationTableCommand.NotifyCanExecuteChanged();
+    }
+
+
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoXKenAllTable))]
     public async Task InsertAllIntoXKenAllTable()
     {
@@ -721,6 +1014,135 @@ public sealed partial class MainViewModel : ObservableValidator
         }
 
         if (TownAllSource.Count <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoRailLineTable))]
+    public async Task InsertAllIntoRailLineTable()
+    {
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+        /*
+        if (PostalCodeSource is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "x-ken-all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+        */
+    }
+
+    private bool CanInsertAllIntoRailLineTable()
+    {
+        if (RailLineSource is null)
+        {
+            return false;
+        }
+
+        if (RailLineSource.Count <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoRailStationTable))]
+    public async Task InsertAllIntoRailStationTable()
+    {
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+        /*
+        if (PostalCodeSource is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "x-ken-all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+        */
+    }
+
+    private bool CanInsertAllIntoRailStationTable()
+    {
+        if (RailStationSource is null)
+        {
+            return false;
+        }
+
+        if (RailStationSource.Count <= 0)
         {
             return false;
         }

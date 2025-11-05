@@ -133,4 +133,10 @@
     <value>郵便番号データ</value>
     <comment>PostalCode</comment>
   </data>
+  <data name="MenuTreeItem_RailLine" xml:space="preserve">
+    <value>路線データ</value>
+  </data>
+  <data name="MenuTreeItem_RailStation" xml:space="preserve">
+    <value>駅データ</value>
+  </data>
 </root>

@@ -34,7 +34,6 @@ namespace MtTownAll;
 
 public partial class App : Application
 {
-
     public static MainWindow? MainWnd
     {
         get; private set;
@@ -68,6 +67,8 @@ public partial class App : Application
             services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
             services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
             services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
+            services.AddSingleton<IRailLineDataService, RailLineDataService>();
+            services.AddSingleton<IRailStationDataService, RailStationDataService>();
             //services.AddSingleton<IDialogService, DialogService>();
 
             // Views and ViewModels
@@ -78,7 +79,12 @@ public partial class App : Application
             services.AddSingleton<TestPage>();
             services.AddSingleton<PrefecturePage>();
             services.AddSingleton<PostalCodePage>();
-            services.AddSingleton<TownAllPage>(); 
+            services.AddSingleton<TownAllPage>();
+
+            services.AddSingleton<RailLinePage>();
+            services.AddSingleton<RailStationPage>();
+
+            //
             services.AddSingleton<SettingsPage>();
 
 
@@ -114,17 +120,9 @@ public partial class App : Application
             Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += App_Activated;
         }
 
-        //MainWnd = new(); // < No
         MainWnd = App.GetService<MainWindow>();
 
-        // Too late here. In order to set themes, sets content in MainWindow constructor.
-        //MainWnd.Content = App.GetService<ShellPage>();
-
-        //MainWnd.Activate(); // Activate won't work..
         MainWnd.AppWindow.Show();
-
-        //_window = new MainWindow();
-        //_window.Activate();
     }
 
     private void App_Activated(object? sender, Microsoft.Windows.AppLifecycle.AppActivationArguments e)
@@ -143,7 +141,6 @@ public partial class App : Application
 
             MainWnd.Activate();
 
-            //MainWindow?.BringToFront();
             var hWnd = WindowNative.GetWindowHandle(MainWnd);
             NativeMethods.ShowWindow(hWnd, NativeMethods.SW_RESTORE); // Ensure it's not minimized
             NativeMethods.SetForegroundWindow(hWnd); // Attempt to set it as the foreground window
