@@ -8,9 +8,7 @@ namespace MtTownAll.Services.Contracts;
 
 public interface IRailLineDataService
 {
-    //Task<IEnumerable<PostalCode>> SelectAddressesByPostalCodeAsync(SqliteConnectionStringBuilder connectionStringBuilder, string postalCode);
-
-    //bool InsertAllXKenAllData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<PostalCode> data);
+    bool InsertAllRainLineData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<RailLine> data);
 
     ObservableCollection<RailLine> ParseRailLineCsv(string filePath);
 

@@ -90,7 +90,7 @@
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="Gmap倍率">
+                    <controls:DataGridTemplateColumn Header="倍率(GoogleMaps)">
                         <controls:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailLine">
                                 <TextBlock Text="{x:Bind LineMapZoom}" Margin="12,0,0,0" Padding="5" />

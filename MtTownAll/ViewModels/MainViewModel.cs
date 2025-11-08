@@ -873,7 +873,7 @@ public sealed partial class MainViewModel : ObservableValidator
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+                Debug.WriteLine($"Exception @InsertAllIntoXKenAllTable(): {ex}");
 
                 IsWorking = false;
             }
@@ -1028,13 +1028,13 @@ public sealed partial class MainViewModel : ObservableValidator
         {
             return;
         }
-        /*
-        if (PostalCodeSource is null)
+        
+        if (RailLineSource is null)
         {
             return;
         }
 
-        if (PostalCodeSource.Count <= 0)
+        if (RailLineSource.Count <= 0)
         {
             return;
         }
@@ -1042,7 +1042,7 @@ public sealed partial class MainViewModel : ObservableValidator
         var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
         {
             SuggestedStartLocation = PickerLocationId.Desktop,
-            SuggestedFileName = "x-ken-all"
+            SuggestedFileName = "rail_lines"
         };
         savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
 
@@ -1055,19 +1055,19 @@ public sealed partial class MainViewModel : ObservableValidator
             {
                 IsWorking = true;
 
-                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                var ret = await Task.Run(() => _railLineDataService.InsertAllRainLineData(connectionStringBuilder, RailLineSource), App.MainWnd.Cts.Token);
                 // TODO: error check.
 
                 IsWorking = false;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+                Debug.WriteLine($"Exception @InsertAllIntoRailLineTable(): {ex}");
 
                 IsWorking = false;
             }
         }
-        */
+
     }
 
     private bool CanInsertAllIntoRailLineTable()
@@ -1093,13 +1093,13 @@ public sealed partial class MainViewModel : ObservableValidator
         {
             return;
         }
-        /*
-        if (PostalCodeSource is null)
+
+        if (RailStationSource is null)
         {
             return;
         }
 
-        if (PostalCodeSource.Count <= 0)
+        if (RailStationSource.Count <= 0)
         {
             return;
         }
@@ -1107,7 +1107,7 @@ public sealed partial class MainViewModel : ObservableValidator
         var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
         {
             SuggestedStartLocation = PickerLocationId.Desktop,
-            SuggestedFileName = "x-ken-all"
+            SuggestedFileName = "rail_stations"
         };
         savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
 
@@ -1120,19 +1120,19 @@ public sealed partial class MainViewModel : ObservableValidator
             {
                 IsWorking = true;
 
-                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                var ret = await Task.Run(() => _railStationDataService.InsertAllRailStationData(connectionStringBuilder, RailStationSource), App.MainWnd.Cts.Token);
                 // TODO: error check.
 
                 IsWorking = false;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Exception @CanInsertAllIntoXKenAllTable(): {ex}");
+                Debug.WriteLine($"Exception @InsertAllIntoRailStationTable(): {ex}");
 
                 IsWorking = false;
             }
         }
-        */
+
     }
 
     private bool CanInsertAllIntoRailStationTable()

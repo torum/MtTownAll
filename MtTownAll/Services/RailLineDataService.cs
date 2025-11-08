@@ -107,8 +107,8 @@ public class RailLineDataService : IRailLineDataService
             Map(x => x.LineSort).Index(12);
         }
     }
-    /*
-    public bool InsertAllXKenAllData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<PostalCode> data)
+
+    public bool InsertAllRainLineData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<RailLine> data)
     {
         if (!data.Any())
         {
@@ -128,12 +128,15 @@ public class RailLineDataService : IRailLineDataService
                 try
                 {
                     // Create table if not exists.
-                    tableCmd.CommandText = "CREATE TABLE IF NOT EXISTS x_ken_all (" +
-                        "municipality_code TEXT NOT NULL," +
-                        "postal_code TEXT NOT NULL," + 
-                        "prefecture_name TEXT NOT NULL," +
-                        "sikuchouson_name TEXT," +
-                        "chouiki_name TEXT" +
+                    tableCmd.CommandText = "CREATE TABLE IF NOT EXISTS rail_lines (" +
+                        "line_code TEXT NOT NULL," +
+                        "line_name TEXT NOT NULL," +
+                        //"line_type TEXT," +
+                        "lon TEXT," +
+                        "lat TEXT," +
+                        "zoom TEXT," +
+                        "e_status TEXT," +
+                        "e_sort TEXT" +
                         ")";
 
                     tableCmd.ExecuteNonQuery();
@@ -142,14 +145,17 @@ public class RailLineDataService : IRailLineDataService
                     foreach (var hoge in data)
                     {
                         var sqlInsertIntoRent = String.Format(
-    "INSERT OR IGNORE INTO x_ken_all " +
-    "(municipality_code, postal_code, prefecture_name, sikuchouson_name, chouiki_name) " +
-    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')",
-    hoge.MunicipalityCode,
-    hoge.Code,
-    hoge.PrefectureName,
-    hoge.SikuchousonName,
-    hoge.ChouikiName);
+    "INSERT OR IGNORE INTO rail_lines " +
+    "(line_code, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
+    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')",
+    hoge.LineCode,
+    hoge.LineName,
+    //hoge.LineType,
+    hoge.LineLon,
+    hoge.LineLat,
+    hoge.LineMapZoom,
+    hoge.LineStatus,
+    hoge.LineSort);
 
                         tableCmd.CommandText = sqlInsertIntoRent;
 
@@ -187,90 +193,10 @@ public class RailLineDataService : IRailLineDataService
             Debug.WriteLine("DB Error: " + ex.Message);
         }
 
-        Debug.WriteLine("Insert Done @InsertAllXKenAllDataAsync in IXKenAllDataService");
+        Debug.WriteLine("Insert Done @InsertAllRainLineData in RailLineDataService");
 
         //await Task.CompletedTask;
         return true;
     }
 
-    private static List<PostalCode> SelectAddressesByPostalCode(SqliteConnectionStringBuilder connectionStringBuilder, string postalCode)
-    {
-        var list = new List<PostalCode>();
-
-        if (string.IsNullOrEmpty(postalCode))
-        {
-            return list;
-        }
-
-        postalCode = postalCode.Replace("-", string.Empty);
-
-        try
-        {
-            using var connection = new SqliteConnection(connectionStringBuilder.ConnectionString);
-            connection.Open();
-
-            using var cmd = connection.CreateCommand();
-
-            cmd.CommandText = $"SELECT * FROM x_ken_all WHERE postal_code = '{postalCode}'";
-
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                var hoge = new PostalCode();
-
-                var lgCode = Convert.ToString(reader["municipality_code"]);
-                hoge.MunicipalityCode = string.IsNullOrEmpty(lgCode) ? string.Empty : lgCode;
-
-                var psCode = Convert.ToString(reader["postal_code"]);
-                hoge.Code = string.IsNullOrEmpty(psCode) ? string.Empty : psCode;
-
-                var pref = Convert.ToString(reader["prefecture_name"]);
-                hoge.PrefectureName = string.IsNullOrEmpty(pref) ? string.Empty : pref;
-
-                var city = Convert.ToString(reader["sikuchouson_name"]);
-                hoge.SikuchousonName = string.IsNullOrEmpty(city) ? string.Empty : city;
-
-                var town = Convert.ToString(reader["chouiki_name"]);
-                hoge.ChouikiName = string.IsNullOrEmpty(town) ? string.Empty : town;
-
-                list.Add(hoge);
-            }
-        }
-        catch (System.Reflection.TargetInvocationException ex)
-        {
-            Debug.WriteLine("Opps. TargetInvocationException");
-
-            if (ex.InnerException != null)
-                throw ex.InnerException;
-        }
-        catch (System.InvalidOperationException ex)
-        {
-            Debug.WriteLine("Opps. InvalidOperationException");
-
-            if (ex.InnerException != null)
-                throw ex.InnerException;
-        }
-        catch (Exception ex)
-        {
-            if (ex.InnerException != null)
-            {
-                Debug.WriteLine(ex.InnerException.Message);
-            }
-            else
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-
-        return list;
-    }
-
-    public async Task<IEnumerable<PostalCode>> SelectAddressesByPostalCodeAsync(SqliteConnectionStringBuilder connectionStringBuilder, string postalCode)
-    {
-        List<PostalCode> postalCodes = [.. SelectAddressesByPostalCode(connectionStringBuilder, postalCode)];
-
-        await Task.CompletedTask;
-        return postalCodes;
-    }
-    */
 }
