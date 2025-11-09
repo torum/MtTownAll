@@ -129,7 +129,7 @@ public class RailLineDataService : IRailLineDataService
                 {
                     // Create table if not exists.
                     tableCmd.CommandText = "CREATE TABLE IF NOT EXISTS rail_lines (" +
-                        "line_code TEXT NOT NULL," +
+                        "line_cd TEXT NOT NULL," +
                         "line_name TEXT NOT NULL," +
                         //"line_type TEXT," +
                         "lon TEXT," +
@@ -146,7 +146,7 @@ public class RailLineDataService : IRailLineDataService
                     {
                         var sqlInsertIntoRent = String.Format(
     "INSERT OR IGNORE INTO rail_lines " +
-    "(line_code, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
+    "(line_cd, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
     "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')",
     hoge.LineCode,
     hoge.LineName,
