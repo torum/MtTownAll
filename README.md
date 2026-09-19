@@ -7,7 +7,7 @@ A GUI applicaton for converting **"mt_town_all.csv"** (全国 町字マスター
 ## Current Status
 **Work in Progress**  
 
-![MtTownAll](https://github.com/torum/MtTownAll/blob/main/Images/Screenshot.png?raw=true) 
+![MtTownAll](https://github.com/torum/MtTownAll/blob/main/Images/Screenshot.png) 
 
 ## The problem
 
