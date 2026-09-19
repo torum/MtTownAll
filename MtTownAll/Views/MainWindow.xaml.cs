@@ -30,7 +30,7 @@ public sealed partial class MainWindow : Window
 
     private readonly ElementTheme theme = ElementTheme.Default;
 
-    public MainWindow()
+    public MainWindow(ViewModels.MainViewModel viewModel, Views.ShellPage shell)
     {
         // This DispatcherQueue should be alive as long as MainWindow is alive. Make sure to clear when the window is closed.
         _currentDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
@@ -38,7 +38,7 @@ public sealed partial class MainWindow : Window
         // For reading shift-jis csv.
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        _vm = App.GetService<MainViewModel>();
+        _vm = viewModel;//App.GetService<MainViewModel>();
 
         InitializeComponent();
 
@@ -50,7 +50,7 @@ public sealed partial class MainWindow : Window
             presenter.PreferredMinimumHeight = 350;
         }
 
-        this.Content = App.GetService<ShellPage>();
+        this.Content = shell;//App.GetService<ShellPage>();
 
         if (this.Content is ShellPage root)
         {
@@ -58,7 +58,7 @@ public sealed partial class MainWindow : Window
 
             //SetCapitionButtonColor();
 
-            root.CallMeWhenMainWindowIsReady(this);
+            root.SetTitleBar(this);
         }
     }
 

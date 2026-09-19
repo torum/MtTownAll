@@ -76,6 +76,7 @@ public partial class App : Application
             services.AddSingleton<MainWindow>();
             services.AddSingleton<ShellPage>();
 
+            /*
             services.AddSingleton<TestPage>();
             services.AddSingleton<PrefecturePage>();
             services.AddSingleton<PostalCodePage>();
@@ -86,6 +87,7 @@ public partial class App : Application
 
             //
             services.AddSingleton<SettingsPage>();
+            */
 
 
             // Configuration
@@ -122,7 +124,7 @@ public partial class App : Application
 
         MainWnd = App.GetService<MainWindow>();
 
-        MainWnd.AppWindow.Show();
+        MainWnd.AppWindow.Show(true);
     }
 
     private void App_Activated(object? sender, Microsoft.Windows.AppLifecycle.AppActivationArguments e)

@@ -40,7 +40,7 @@ public sealed partial class ShellPage : Page
 
     }
 
-    public void CallMeWhenMainWindowIsReady(MainWindow wnd)
+    public void SetTitleBar(MainWindow wnd)
     {
         wnd.SetTitleBar(AppTitleBar);
     }
