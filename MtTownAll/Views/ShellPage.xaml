@@ -35,7 +35,7 @@
 
         <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BorderBrush="{ThemeResource SmokeFillColorDefaultBrush}" BorderThickness="0,0,0,0">
 
-            <NavigationView x:Name="NaviView" MenuItemsSource="{x:Bind ViewModel.MainMenuItems, Mode=OneWay}" AccessKey="H" PaneDisplayMode="Auto" IsTitleBarAutoPaddingEnabled="True" IsBackButtonVisible="Collapsed" IsPaneToggleButtonVisible="True" IsSettingsVisible="True" ExpandedModeThresholdWidth="1008" CompactModeThresholdWidth="640" OpenPaneLength ="320" Loaded="NaviView_Loaded" ItemInvoked="NaviView_ItemInvoked" SelectionChanged="NaviView_SelectionChanged">
+            <NavigationView x:Name="NaviView" MenuItemsSource="{x:Bind ViewModel.MainMenuItems, Mode=OneWay}" AccessKey="H" IsSettingsVisible="False" PaneDisplayMode="Auto" IsTitleBarAutoPaddingEnabled="True" IsBackButtonVisible="Collapsed" IsPaneToggleButtonVisible="True" ExpandedModeThresholdWidth="1008" CompactModeThresholdWidth="640" OpenPaneLength ="320" Loaded="NaviView_Loaded" ItemInvoked="NaviView_ItemInvoked" SelectionChanged="NaviView_SelectionChanged">
                 <!-- Header pane -->
                 <NavigationView.PaneHeader>
                     <!-- App title and icon -->

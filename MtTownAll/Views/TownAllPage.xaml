@@ -19,9 +19,9 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <CommandBar DefaultLabelPosition="Right">
-                <AppBarButton Icon="OpenFile" Label="Select File" Command="{x:Bind ViewModel.FileTownAllOpenCommand}"></AppBarButton>
+                <AppBarButton Icon="OpenFile" Label="変換元CSVファイルを選択" Command="{x:Bind ViewModel.FileTownAllOpenCommand}"></AppBarButton>
 
-                <AppBarButton Icon="SaveLocal" Label="Create SQLite DB" Command="{x:Bind ViewModel.InsertAllIntoMtTownAllTableCommand}"></AppBarButton>
+                <AppBarButton Icon="SaveLocal" Label="SQLite DBのファイル生成" Command="{x:Bind ViewModel.InsertAllIntoMtTownAllTableCommand}"></AppBarButton>
 
                 <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
                 <CommandBar.Content>
