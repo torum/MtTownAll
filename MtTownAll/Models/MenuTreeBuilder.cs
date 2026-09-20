@@ -1,6 +1,3 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Runtime.Versioning;
 using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace MtTownAll.Models;

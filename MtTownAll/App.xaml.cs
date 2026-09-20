@@ -1,32 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
 using MtTownAll.Services;
 using MtTownAll.Services.Contracts;
 using MtTownAll.ViewModels;
 using MtTownAll.Views;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Search;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Services.Maps;
-using Windows.UI.ApplicationSettings;
 using WinRT.Interop;
 
 
@@ -54,6 +34,7 @@ public partial class App : Application
 
         return service;
     }
+
     public App()
     {
         InitializeComponent();
@@ -69,29 +50,10 @@ public partial class App : Application
             services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
             services.AddSingleton<IRailLineDataService, RailLineDataService>();
             services.AddSingleton<IRailStationDataService, RailStationDataService>();
-            //services.AddSingleton<IDialogService, DialogService>();
-
             // Views and ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<ShellPage>();
-
-            /*
-            services.AddSingleton<TestPage>();
-            services.AddSingleton<PrefecturePage>();
-            services.AddSingleton<PostalCodePage>();
-            services.AddSingleton<TownAllPage>();
-
-            services.AddSingleton<RailLinePage>();
-            services.AddSingleton<RailStationPage>();
-
-            //
-            services.AddSingleton<SettingsPage>();
-            */
-
-
-            // Configuration
-            //services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
         }).
         Build();
 
@@ -123,7 +85,6 @@ public partial class App : Application
         }
 
         MainWnd = App.GetService<MainWindow>();
-
         MainWnd.AppWindow.Show(true);
     }
 

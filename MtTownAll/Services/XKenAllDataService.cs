@@ -2,13 +2,10 @@
 using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
-using MtTownAll.Services;
 using MtTownAll.Services.Contracts;
-using MtTownAll.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;

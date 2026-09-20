@@ -2,19 +2,15 @@
 using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
-using MtTownAll.Services;
 using MtTownAll.Services.Contracts;
-using MtTownAll.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MtTownAll.Services;
 

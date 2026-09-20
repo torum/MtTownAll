@@ -3,20 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Data.Sqlite;
 using Microsoft.Windows.Storage.Pickers;
 using MtTownAll.Models;
-using MtTownAll.Services;
 using MtTownAll.Services.Contracts;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace MtTownAll.ViewModels;
 
