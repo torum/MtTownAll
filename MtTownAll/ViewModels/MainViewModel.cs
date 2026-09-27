@@ -17,6 +17,35 @@ namespace MtTownAll.ViewModels;
 
 public sealed partial class MainViewModel : ObservableValidator
 {
+    // DB
+    private static string DataBaseFilePath => System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + Path.DirectorySeparatorChar + "Address.db";
+    private SqliteConnectionStringBuilder connectionStringBuilder;
+
+    // Services
+    private readonly IMtPrefAllDataService _prefectureDataService;
+    private readonly IMtTownAllDataService _townDataService;
+    private readonly IXKenAllDataService _postalCodeDataService;
+    private readonly IRailLineDataService _railLineDataService;
+    private readonly IRailStationDataService _railStationDataService;
+
+    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
+    {
+        _prefectureDataService = prefectureDataService;
+        _townDataService = townDataService;
+        _postalCodeDataService = postalCodeDataService;
+        _railLineDataService = railLineDataService;
+        _railStationDataService = railStationDataService;
+
+        connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false"); // Set Pooling=false so that the app does not hold a file lock.
+
+        PopulatePrefectures();
+
+        ErrorsChanged += (sender, arg) => { this.UpdateErrorMessages(arg); };
+        _railStationDataService = railStationDataService;
+    }
+
+    #region == Properties ==
+
     #region == Gneric Properties ==
 
     private bool _isWorking;
@@ -472,32 +501,9 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #endregion
 
-    // DB
-    private static string DataBaseFilePath => System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + Path.DirectorySeparatorChar + "Address.db";
-    private SqliteConnectionStringBuilder connectionStringBuilder;
+    #endregion
 
-    // Services
-    private readonly IMtPrefAllDataService _prefectureDataService;
-    private readonly IMtTownAllDataService _townDataService;
-    private readonly IXKenAllDataService _postalCodeDataService;
-    private readonly IRailLineDataService _railLineDataService;
-    private readonly IRailStationDataService _railStationDataService;
-
-    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
-    {
-        _prefectureDataService = prefectureDataService;
-        _townDataService = townDataService;
-        _postalCodeDataService = postalCodeDataService;
-        _railLineDataService = railLineDataService;
-        _railStationDataService = railStationDataService;
-
-        connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false"); // Set Pooling=false so that the app does not hold a file lock.
-
-        PopulatePrefectures();
-
-        ErrorsChanged += (sender, arg) => { this.UpdateErrorMessages(arg); };
-        _railStationDataService = railStationDataService;
-    }
+    #region == private methods ==
 
     private void UpdateErrorMessages(DataErrorsChangedEventArgs arg)
     {
@@ -573,10 +579,12 @@ public sealed partial class MainViewModel : ObservableValidator
 
     }
 
+    #endregion
+
     #region == Commands ==
 
     [RelayCommand]
-    public async Task FileKenAllOpen()
+    private async Task FileKenAllOpen()
     {
         PostalCodeSource.Clear();
 
@@ -639,7 +647,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    public async Task FileTownAllOpen()
+    private async Task FileTownAllOpen()
     {
         TownAllSource.Clear();
 
@@ -701,7 +709,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    public async Task FileRailLineOpen()
+    private async Task FileRailLineOpen()
     {
         RailLineSource.Clear();
 
@@ -764,7 +772,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    public async Task FileRailStataionOpen()
+    private async Task FileRailStataionOpen()
     {
         RailStationSource.Clear();
 
@@ -828,7 +836,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoXKenAllTable))]
-    public async Task InsertAllIntoXKenAllTable()
+    private async Task InsertAllIntoXKenAllTable()
     {
         if (App.MainWnd is null)
         {
@@ -891,7 +899,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoMtPrefAllTable))]
-    public async Task InsertAllIntoMtPrefAllTable()
+    private async Task InsertAllIntoMtPrefAllTable()
     {
         if (App.MainWnd is null)
         {
@@ -954,7 +962,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoMtTownAllTable))]
-    public async Task InsertAllIntoMtTownAllTable()
+    private async Task InsertAllIntoMtTownAllTable()
     {
         if (App.MainWnd is null)
         {
@@ -1017,7 +1025,7 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoRailLineTable))]
-    public async Task InsertAllIntoRailLineTable()
+    private async Task InsertAllIntoRailLineTable()
     {
         if (App.MainWnd is null)
         {
@@ -1082,7 +1090,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
 
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoRailStationTable))]
-    public async Task InsertAllIntoRailStationTable()
+    private async Task InsertAllIntoRailStationTable()
     {
         if (App.MainWnd is null)
         {
