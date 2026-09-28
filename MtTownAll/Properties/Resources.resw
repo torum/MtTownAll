@@ -139,4 +139,7 @@
   <data name="MenuTreeItem_RailStation" xml:space="preserve">
     <value>駅データ</value>
   </data>
+  <data name="MenuTreeItem_AbrPostalCode" xml:space="preserve">
+    <value>ABR町字・郵便番号変換表</value>
+  </data>
 </root>

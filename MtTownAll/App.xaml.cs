@@ -48,6 +48,7 @@ public partial class App : Application
             services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
             services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
             services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
+            services.AddSingleton<IAbrPostalCodeService, AbrPostalCodeService>();
             services.AddSingleton<IRailLineDataService, RailLineDataService>();
             services.AddSingleton<IRailStationDataService, RailStationDataService>();
             // Views and ViewModels

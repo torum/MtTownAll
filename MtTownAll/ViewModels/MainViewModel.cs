@@ -25,14 +25,16 @@ public sealed partial class MainViewModel : ObservableValidator
     private readonly IMtPrefAllDataService _prefectureDataService;
     private readonly IMtTownAllDataService _townDataService;
     private readonly IXKenAllDataService _postalCodeDataService;
+    private readonly IAbrPostalCodeService _abrPostalCodeService;
     private readonly IRailLineDataService _railLineDataService;
     private readonly IRailStationDataService _railStationDataService;
 
-    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
+    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IAbrPostalCodeService abrPostalCodeService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
     {
         _prefectureDataService = prefectureDataService;
         _townDataService = townDataService;
         _postalCodeDataService = postalCodeDataService;
+        _abrPostalCodeService = abrPostalCodeService;
         _railLineDataService = railLineDataService;
         _railStationDataService = railStationDataService;
 
@@ -108,6 +110,10 @@ public sealed partial class MainViewModel : ObservableValidator
                 //
             }
             else if (value is NodeMenuPostalCode)
+            {
+                //
+            }
+            else if (value is NodeMenuAbrPostalCode)
             {
                 //
             }
@@ -647,6 +653,71 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     [RelayCommand]
+    private async Task FileAbrPostalCodeOpen()
+    {
+        /*
+        PostalCodeSource.Clear();
+
+        IsShowInfoWindowXKenAll = false;
+
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
+        // x-ken-all.csv
+        filePicker.FileTypeFilter.Add(".csv");
+        filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
+
+        var file = await filePicker.PickSingleFileAsync();
+
+        if (file == null)
+        {
+            return;
+        }
+
+        IsWorking = true;
+
+        try
+        {
+            var kenAll = await Task.Run(() => _postalCodeDataService.ParseXKenAllCsv(file.Path), App.MainWnd.Cts.Token);
+
+            PostalCodeSource = kenAll;
+
+            if (kenAll.Count == 0)
+            {
+                InfoBarInfoTitleXKenAll = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageXKenAll = "選択したファイルが「x-ken-all.csv」かどうか確認してください。";
+                IsShowInfoWindowXKenAll = true;
+            }
+        }
+        catch (CsvHelper.MissingFieldException ex)
+        {
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileKenAllOpen {ex}");
+
+            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageXKenAll = "カラム数が違います。選択したファイルが「x-ken-all.csv」かどうか確認してください。";
+            IsShowInfoWindowXKenAll = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception @FileKenAllOpen {ex}");
+
+            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageXKenAll = $"{ex}";
+            IsShowInfoWindowXKenAll = true;
+        }
+        finally
+        {
+            IsWorking = false;
+        }
+
+        InsertAllIntoXKenAllTableCommand.NotifyCanExecuteChanged();
+        */
+    }
+
+    [RelayCommand]
     private async Task FileTownAllOpen()
     {
         TownAllSource.Clear();
@@ -895,6 +966,72 @@ public sealed partial class MainViewModel : ObservableValidator
             return false;   
         }
 
+        return true;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanInsertAllIntoAbrPostalCodeTable))]
+    private async Task InsertAllIntoAbrPostalCodeTable()
+    {
+        /*
+        if (App.MainWnd is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource is null)
+        {
+            return;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return;
+        }
+
+        var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
+        {
+            SuggestedStartLocation = PickerLocationId.Desktop,
+            SuggestedFileName = "x-ken-all"
+        };
+        savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
+
+        var result = await savePicker.PickSaveFileAsync();
+        if (result is not null)
+        {
+            connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={result.Path};Pooling=false");// Set Pooling=false so that the app does not hold a file lock.
+
+            try
+            {
+                IsWorking = true;
+
+                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                // TODO: error check.
+
+                IsWorking = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception @InsertAllIntoXKenAllTable(): {ex}");
+
+                IsWorking = false;
+            }
+        }
+        */
+    }
+
+    private bool CanInsertAllIntoAbrPostalCodeTable()
+    {
+        /*
+        if (PostalCodeSource is null)
+        {
+            return false;
+        }
+
+        if (PostalCodeSource.Count <= 0)
+        {
+            return false;
+        }
+        */
         return true;
     }
 

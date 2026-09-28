@@ -115,6 +115,18 @@ public sealed partial class ShellPage : Page
                 vm.SelectedNodeMenu = args.SelectedItem as NodeTree;
             }
         }
+        else if (args.SelectedItem is NodeMenuAbrPostalCode)
+        {
+            if (_currentPage == typeof(PostalCodeAbrPage))
+            {
+                return;
+            }
+            if (this.NavigationFrame.Navigate(typeof(PostalCodeAbrPage), this.NavigationFrame, args.RecommendedNavigationTransitionInfo))
+            {
+                _currentPage = typeof(PostalCodeAbrPage);
+                vm.SelectedNodeMenu = args.SelectedItem as NodeTree;
+            }
+        }
         else if (args.SelectedItem is NodeMenuRailLine)
         {
             if (_currentPage == typeof(RailLinePage))
