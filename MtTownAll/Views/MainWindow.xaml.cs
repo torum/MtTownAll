@@ -47,6 +47,8 @@ public sealed partial class MainWindow : Window
 
             root.SetTitleBar(this);
         }
+
+        this.Closed += Window_Closed;
     }
 
     private void Window_Closed(object sender, WindowEventArgs args)

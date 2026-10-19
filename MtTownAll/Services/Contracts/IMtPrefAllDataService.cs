@@ -7,7 +7,7 @@ namespace MtTownAll.Services.Contracts;
 
 public interface IMtPrefAllDataService
 {
-    Task<IEnumerable<Prefecture>> GetPrefectureDataAsync();
+    IEnumerable<Prefecture> GetPrefectureData();
 
     bool InsertAllPrefectureData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<Prefecture> data);
 

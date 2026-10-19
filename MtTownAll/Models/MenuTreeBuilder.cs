@@ -96,20 +96,6 @@ public partial class MenuTreeBuilder : NodeTree
         };
         Children.Add(nmta);
 
-        /*
-        str = resourceLoader.GetString("MenuTreeItem_AbrPostalCode");
-        NodeMenuAbrPostalCode nmapc = new(str)
-        {
-            Tag = "AbrPostalCode",
-            //Selected = true,
-            Selected = false,
-            Expanded = false,
-
-            Parent = this
-        };
-        Children.Add(nmapc);
-        */
-
         str = resourceLoader.GetString("MenuTreeItem_PostalCode");
         NodeMenuPostalCode nmpc = new(str)
         {
@@ -145,6 +131,18 @@ public partial class MenuTreeBuilder : NodeTree
             Parent = this
         };
         Children.Add(nmrs);
+
+        str = resourceLoader.GetString("MenuTreeItem_AbrPostalCode");
+        NodeMenuAbrPostalCode nmapc = new(str)
+        {
+            Tag = "AbrPostalCode",
+            //Selected = true,
+            Selected = false,
+            Expanded = false,
+
+            Parent = this
+        };
+        Children.Add(nmapc);
 
         // TODO:
         /*

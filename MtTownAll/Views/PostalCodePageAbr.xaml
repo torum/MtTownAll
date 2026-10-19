@@ -26,7 +26,7 @@
                 <AppBarButton Icon="Upload" Label="Load from SQLite DB" Visibility="Collapsed"></AppBarButton>
                 <CommandBar.Content>
                     <StackPanel Orientation="Horizontal" Margin="48,0,0,0">
-                        <TextBlock Text="ABR町字・郵便番号変換表" Style="{ThemeResource TitleTextBlockStyle}" />
+                        <TextBlock Text="町字・郵便番号変換表" Style="{ThemeResource TitleTextBlockStyle}" />
                         <HyperlinkButton NavigateUri="https://dataset.address-br.digital.go.jp/datasets/1098a4f61dab4f52997839d04245132a/about" Margin="12,0,0,0" FontWeight="SemiBold" VerticalAlignment="Bottom">abr_post_code.csv</HyperlinkButton>
                     </StackPanel>
                 </CommandBar.Content>
@@ -39,7 +39,7 @@
         </Grid>
 
         <Grid Grid.Row="2" Margin="48,12,0,12">
-            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.PostalCodeSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
+            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.AbrPostalCodeSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
                 <controls:DataGrid.Resources>
                     <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
                     <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
@@ -49,40 +49,112 @@
 
                     <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
                         <controls:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate x:DataType="model:PostalCode">
-                                <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind LgCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="郵便番号">
+                    <controls:DataGridTemplateColumn Header="町字ID">
                         <controls:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate x:DataType="model:PostalCode">
-                                <TextBlock Text="{x:Bind Code}" Margin="12,0,0,0" Padding="5" />
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind MachiazaId}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>
 
                     <controls:DataGridTemplateColumn Header="都道府県名">
                         <controls:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate x:DataType="model:PostalCode">
-                                <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind Pref}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="郡名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind County}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>
 
                     <controls:DataGridTemplateColumn Header="市区町村名">
                         <controls:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate x:DataType="model:PostalCode">
-                                <TextBlock Text="{x:Bind SikuchousonName}" Margin="12,0,0,0" Padding="5" />
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind City}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="町域名">
+                    <controls:DataGridTemplateColumn Header="政令市区名">
                         <controls:DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate x:DataType="model:PostalCode">
-                                <TextBlock Text="{x:Bind ChouikiName}" Margin="12,0,0,0" Padding="5" />
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind Ward}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="京都通り名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind KyotoSt}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="大字・町名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind OazaCho}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="丁目名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind Chome}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="小字名">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind Koaza}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="同一町字識別情報">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind MachiazaDist}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="郵便番号">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind PostCode}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="追加日">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind AddDate}" Margin="12,0,0,0" Padding="5" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="削除日">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:AbrPostalCode">
+                                <TextBlock Text="{x:Bind DltDate}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
                         </controls:DataGridTemplateColumn.CellTemplate>
                     </controls:DataGridTemplateColumn>

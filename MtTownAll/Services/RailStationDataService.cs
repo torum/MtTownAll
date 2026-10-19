@@ -137,23 +137,46 @@ public class RailStationDataService : IRailStationDataService
 
                     tableCmd.ExecuteNonQuery();
 
+                    /*
+                    var sqlInsertIntoRent = String.Format(
+                    "INSERT OR IGNORE INTO rail_stations " +
+                    "(station_cd, station_name, line_cd, pref_cd, lon, lat, e_status, e_sort) " +
+                    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')",
+                    hoge.StationCode,
+                    hoge.StationName,
+                    hoge.LineCode,
+                    hoge.PrefCode,
+                    hoge.StationLon,
+                    hoge.StationLat,
+                    hoge.StationStatus,
+                    hoge.StationSort);
+
+                    tableCmd.CommandText = sqlInsertIntoRent;
+                    */
+                    tableCmd.CommandText = "INSERT OR IGNORE INTO rail_stations " +
+                        "(station_cd, station_name, line_cd, pref_cd, lon, lat, e_status, e_sort) " +
+                        "VALUES ($station_cd, $station_name, $line_cd, $pref_cd, $lon, $lat, $status, $sort)";
+
+                    tableCmd.Parameters.AddWithValue("$station_cd", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$station_name", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$line_cd", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$pref_cd", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$lon", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$lat", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$status", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$sort", string.Empty);
+
                     // Insert data
                     foreach (var hoge in data)
                     {
-                        var sqlInsertIntoRent = String.Format(
-    "INSERT OR IGNORE INTO rail_stations " +
-    "(station_cd, station_name, line_cd, pref_cd, lon, lat, e_status, e_sort) " +
-    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')",
-    hoge.StationCode,
-    hoge.StationName,
-    hoge.LineCode,
-    hoge.PrefCode,
-    hoge.StationLon,
-    hoge.StationLat,
-    hoge.StationStatus,
-    hoge.StationSort);
-
-                        tableCmd.CommandText = sqlInsertIntoRent;
+                        tableCmd.Parameters["$station_cd"].Value = hoge.StationCode ?? string.Empty;
+                        tableCmd.Parameters["$station_name"].Value = hoge.StationName ?? string.Empty;
+                        tableCmd.Parameters["$line_cd"].Value = hoge.LineCode ?? string.Empty;
+                        tableCmd.Parameters["$pref_cd"].Value = hoge.PrefCode ?? string.Empty;
+                        tableCmd.Parameters["$lon"].Value = hoge.StationLon ?? string.Empty;
+                        tableCmd.Parameters["$lat"].Value = hoge.StationLat ?? string.Empty;
+                        tableCmd.Parameters["$status"].Value = hoge.StationStatus ?? string.Empty;
+                        tableCmd.Parameters["$sort"].Value = hoge.StationSort ?? string.Empty;
 
                         var InsertIntoRentResult = tableCmd.ExecuteNonQuery();
                     }

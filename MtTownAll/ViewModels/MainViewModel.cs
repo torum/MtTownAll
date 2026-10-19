@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MtTownAll.ViewModels;
 
@@ -25,22 +26,20 @@ public sealed partial class MainViewModel : ObservableValidator
     private readonly IMtPrefAllDataService _prefectureDataService;
     private readonly IMtTownAllDataService _townDataService;
     private readonly IXKenAllDataService _postalCodeDataService;
-    private readonly IAbrPostalCodeService _abrPostalCodeService;
+    private readonly IAbrPostalCodeDataService _abrPostalCodeDataService;
     private readonly IRailLineDataService _railLineDataService;
     private readonly IRailStationDataService _railStationDataService;
 
-    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IAbrPostalCodeService abrPostalCodeService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
+    public MainViewModel(IMtPrefAllDataService prefectureDataService, IXKenAllDataService postalCodeDataService, IAbrPostalCodeDataService abrPostalCodeDataService, IMtTownAllDataService townDataService, IRailLineDataService railLineDataService, IRailStationDataService railStationDataService)
     {
         _prefectureDataService = prefectureDataService;
         _townDataService = townDataService;
         _postalCodeDataService = postalCodeDataService;
-        _abrPostalCodeService = abrPostalCodeService;
+        _abrPostalCodeDataService = abrPostalCodeDataService;
         _railLineDataService = railLineDataService;
         _railStationDataService = railStationDataService;
 
         connectionStringBuilder = new SqliteConnectionStringBuilder($"Data Source={DataBaseFilePath};Pooling=false"); // Set Pooling=false so that the app does not hold a file lock.
-
-        PopulatePrefectures();
 
         ErrorsChanged += (sender, arg) => { this.UpdateErrorMessages(arg); };
         _railStationDataService = railStationDataService;
@@ -192,6 +191,57 @@ public sealed partial class MainViewModel : ObservableValidator
             }
 
             OnPropertyChanged(nameof(IsShowInfoWindowXKenAll));
+        }
+    }
+
+    //
+    private string _infoBarInfoTitleAbrPostalCode = "";
+    public string InfoBarInfoTitleAbrPostalCode
+    {
+        get
+        {
+            return _infoBarInfoTitleAbrPostalCode;
+        }
+        set
+        {
+            _infoBarInfoTitleAbrPostalCode = value;
+            OnPropertyChanged(nameof(InfoBarInfoTitleAbrPostalCode));
+        }
+    }
+
+    private string _infoBarInfoMessageAbrPostalCode = "";
+    public string InfoBarInfoMessageAbrPostalCode
+    {
+        get
+        {
+            return _infoBarInfoMessageAbrPostalCode;
+        }
+        set
+        {
+            _infoBarInfoMessageAbrPostalCode = value;
+            OnPropertyChanged(nameof(InfoBarInfoMessageAbrPostalCode));
+        }
+    }
+
+    private bool _isShowInfoWindowAbrPostalCode;
+    public bool IsShowInfoWindowAbrPostalCode
+
+    {
+        get { return _isShowInfoWindowAbrPostalCode; }
+        set
+        {
+            if (_isShowInfoWindowAbrPostalCode == value)
+                return;
+
+            _isShowInfoWindowAbrPostalCode = value;
+
+            if (!_isShowInfoWindowAbrPostalCode)
+            {
+                InfoBarInfoTitleAbrPostalCode = string.Empty;
+                InfoBarInfoMessageAbrPostalCode = string.Empty;
+            }
+
+            OnPropertyChanged(nameof(IsShowInfoWindowAbrPostalCode));
         }
     }
 
@@ -354,7 +404,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #endregion
 
-    #region == KenAll (Postal Code) ==
+    #region == KenAll Postal Code ==
 
     private ObservableCollection<PostalCode> _postalCodeSource = [];
     public ObservableCollection<PostalCode> PostalCodeSource
@@ -369,6 +419,26 @@ public sealed partial class MainViewModel : ObservableValidator
 
             _postalCodeSource = value;
             OnPropertyChanged(nameof(PostalCodeSource));
+        }
+    }
+
+    #endregion
+
+    #region == ABR Postal Code ==
+
+    private ObservableCollection<AbrPostalCode> _abrPostalCodeSource = new ObservableCollection<AbrPostalCode>();
+    public ObservableCollection<AbrPostalCode> AbrPostalCodeSource
+    {
+        get => _abrPostalCodeSource;
+        set
+        {
+            if (_abrPostalCodeSource == value)
+            {
+                return;
+            }
+
+            _abrPostalCodeSource = value;
+            OnPropertyChanged(nameof(AbrPostalCodeSource));
         }
     }
 
@@ -396,7 +466,7 @@ public sealed partial class MainViewModel : ObservableValidator
 
     #region == MtPrefAll ==
 
-    public ObservableCollection<Prefecture> PrefectureSource { get; } = [];
+    public ObservableCollection<Prefecture> PrefectureSource { get; private set; } = [];
 
     #endregion
 
@@ -481,7 +551,8 @@ public sealed partial class MainViewModel : ObservableValidator
                 PostalCodeErrorMessage = string.Empty;
                 PostalCodeHasError = false;
 
-                GetAddressesFromPostalCode(postalCode);
+                // TODO:
+                _ = GetAddressesFromPostalCodeAsync(postalCode);
             }
         }
     }
@@ -525,17 +596,27 @@ public sealed partial class MainViewModel : ObservableValidator
         Debug.WriteLine(message);
     }
 
-    private async void PopulatePrefectures()
+    private async Task PopulatePrefecturesAsync()
     {
-        var data = await _prefectureDataService.GetPrefectureDataAsync();
+        await Task.Yield();
 
-        foreach (var item in data)
+        //var data = await _prefectureDataService.GetPrefectureDataAsync();
+        await Task.Run(() =>
         {
-            PrefectureSource.Add(item);
-        }
+            var data = _prefectureDataService.GetPrefectureData();
+            App.MainWnd?.CurrentDispatcherQueue?.TryEnqueue(() =>
+            {
+                if (data is not null)
+                {
+                    PrefectureSource = new ObservableCollection<Prefecture>(data);
+                    OnPropertyChanged(nameof(PrefectureSource));
+                    InsertAllIntoMtPrefAllTableCommand.NotifyCanExecuteChanged();
+                }
+            });
+        });
     }
 
-    private async void GetAddressesFromPostalCode(string value)
+    private async Task GetAddressesFromPostalCodeAsync(string value)
     {
         SelectedPrefecture = null;
 
@@ -586,6 +667,11 @@ public sealed partial class MainViewModel : ObservableValidator
     }
 
     #endregion
+
+    public async Task LoadInitialDataAsync()
+    {
+        await PopulatePrefecturesAsync();
+    }
 
     #region == Commands ==
 
@@ -655,10 +741,9 @@ public sealed partial class MainViewModel : ObservableValidator
     [RelayCommand]
     private async Task FileAbrPostalCodeOpen()
     {
-        /*
-        PostalCodeSource.Clear();
+        AbrPostalCodeSource.Clear();
 
-        IsShowInfoWindowXKenAll = false;
+        IsShowInfoWindowAbrPostalCode = false;
 
         if (App.MainWnd is null)
         {
@@ -666,7 +751,7 @@ public sealed partial class MainViewModel : ObservableValidator
         }
 
         var filePicker = new FileOpenPicker(App.MainWnd.AppWindow.Id);
-        // x-ken-all.csv
+        // abr_post_code.csv
         filePicker.FileTypeFilter.Add(".csv");
         filePicker.SuggestedStartLocation = PickerLocationId.Desktop;
 
@@ -681,40 +766,40 @@ public sealed partial class MainViewModel : ObservableValidator
 
         try
         {
-            var kenAll = await Task.Run(() => _postalCodeDataService.ParseXKenAllCsv(file.Path), App.MainWnd.Cts.Token);
+            var abrPostalCode = await Task.Run(() => _abrPostalCodeDataService.ParseAbrPostalCodeCsv(file.Path), App.MainWnd.Cts.Token);
 
-            PostalCodeSource = kenAll;
+            AbrPostalCodeSource = abrPostalCode ?? new ObservableCollection<AbrPostalCode>();
 
-            if (kenAll.Count == 0)
+            if (abrPostalCode == null || abrPostalCode.Count == 0)
             {
-                InfoBarInfoTitleXKenAll = "CSVファイルの読み込み失敗";
-                InfoBarInfoMessageXKenAll = "選択したファイルが「x-ken-all.csv」かどうか確認してください。";
-                IsShowInfoWindowXKenAll = true;
+                InfoBarInfoTitleAbrPostalCode = "CSVファイルの読み込み失敗";
+                InfoBarInfoMessageAbrPostalCode = "選択したファイルが「abr_post_code.csv」かどうか確認してください。";
+                IsShowInfoWindowAbrPostalCode = true;
             }
         }
         catch (CsvHelper.MissingFieldException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileKenAllOpen {ex}");
+            Debug.WriteLine($"CsvHelper.MissingFieldException @FileAbrPostalCodeOpen {ex}");
 
-            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
-            InfoBarInfoMessageXKenAll = "カラム数が違います。選択したファイルが「x-ken-all.csv」かどうか確認してください。";
-            IsShowInfoWindowXKenAll = true;
+            InfoBarInfoTitleAbrPostalCode = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageAbrPostalCode = "カラム数が違います。選択したファイルが「abr_post_code.csv」かどうか確認してください。";
+            IsShowInfoWindowAbrPostalCode = true;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Exception @FileKenAllOpen {ex}");
+            Debug.WriteLine($"Exception @FileAbrPostalCodeOpen {ex}");
 
-            InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
-            InfoBarInfoMessageXKenAll = $"{ex}";
-            IsShowInfoWindowXKenAll = true;
+            InfoBarInfoTitleAbrPostalCode = "CSVファイルの読み込みでエラー";
+            InfoBarInfoMessageAbrPostalCode = $"{ex}";
+            IsShowInfoWindowAbrPostalCode = true;
         }
         finally
         {
             IsWorking = false;
         }
 
-        InsertAllIntoXKenAllTableCommand.NotifyCanExecuteChanged();
-        */
+        InsertAllIntoAbrPostalCodeTableCommand.NotifyCanExecuteChanged();
+
     }
 
     [RelayCommand]
@@ -905,7 +990,6 @@ public sealed partial class MainViewModel : ObservableValidator
         InsertAllIntoRailStationTableCommand.NotifyCanExecuteChanged();
     }
 
-
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoXKenAllTable))]
     private async Task InsertAllIntoXKenAllTable()
     {
@@ -972,18 +1056,17 @@ public sealed partial class MainViewModel : ObservableValidator
     [RelayCommand(CanExecute = nameof(CanInsertAllIntoAbrPostalCodeTable))]
     private async Task InsertAllIntoAbrPostalCodeTable()
     {
-        /*
         if (App.MainWnd is null)
         {
             return;
         }
 
-        if (PostalCodeSource is null)
+        if (AbrPostalCodeSource is null)
         {
             return;
         }
 
-        if (PostalCodeSource.Count <= 0)
+        if (AbrPostalCodeSource.Count <= 0)
         {
             return;
         }
@@ -991,7 +1074,7 @@ public sealed partial class MainViewModel : ObservableValidator
         var savePicker = new Microsoft.Windows.Storage.Pickers.FileSavePicker(App.MainWnd.AppWindow.Id)
         {
             SuggestedStartLocation = PickerLocationId.Desktop,
-            SuggestedFileName = "x-ken-all"
+            SuggestedFileName = "abr_postal_code"
         };
         savePicker.FileTypeChoices.Add("SQLite Database", [".db"]);
 
@@ -1004,34 +1087,31 @@ public sealed partial class MainViewModel : ObservableValidator
             {
                 IsWorking = true;
 
-                var ret = await Task.Run(() => _postalCodeDataService.InsertAllXKenAllData(connectionStringBuilder, PostalCodeSource), App.MainWnd.Cts.Token);
+                var ret = await Task.Run(() => _abrPostalCodeDataService.InsertAbrPostalCodeData(connectionStringBuilder, AbrPostalCodeSource), App.MainWnd.Cts.Token);
                 // TODO: error check.
 
                 IsWorking = false;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Exception @InsertAllIntoXKenAllTable(): {ex}");
+                Debug.WriteLine($"Exception @InsertAllIntoAbrPostalCodeTable(): {ex}");
 
                 IsWorking = false;
             }
         }
-        */
     }
 
     private bool CanInsertAllIntoAbrPostalCodeTable()
     {
-        /*
-        if (PostalCodeSource is null)
+        if (AbrPostalCodeSource is null)
         {
             return false;
         }
 
-        if (PostalCodeSource.Count <= 0)
+        if (AbrPostalCodeSource.Count <= 0)
         {
             return false;
         }
-        */
         return true;
     }
 

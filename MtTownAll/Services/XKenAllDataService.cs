@@ -6,6 +6,7 @@ using MtTownAll.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -127,21 +128,39 @@ public class XKenAllDataService : IXKenAllDataService
                         ")";
 
                     tableCmd.ExecuteNonQuery();
+                    /*
+                    var sqlInsertIntoRent = String.Format(
+"INSERT OR IGNORE INTO x_ken_all " +
+"(municipality_code, postal_code, prefecture_name, sikuchouson_name, chouiki_name) " +
+"VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')",
+hoge.MunicipalityCode,
+hoge.Code,
+hoge.PrefectureName,
+hoge.SikuchousonName,
+hoge.ChouikiName);
+
+                    tableCmd.CommandText = sqlInsertIntoRent;
+                    */
+
+                    tableCmd.CommandText = "INSERT OR IGNORE INTO x_ken_all " +
+    "(municipality_code, postal_code, prefecture_name, sikuchouson_name, chouiki_name) " +
+    "VALUES (@municipality, @postal, @prefecture, @sikuchouson, @chouiki)";
+
+                    // 2. Define the parameters once before the loop begins
+                    tableCmd.Parameters.AddWithValue("@municipality", string.Empty);
+                    tableCmd.Parameters.AddWithValue("@postal", string.Empty);
+                    tableCmd.Parameters.AddWithValue("@prefecture", string.Empty);
+                    tableCmd.Parameters.AddWithValue("@sikuchouson", string.Empty);
+                    tableCmd.Parameters.AddWithValue("@chouiki", string.Empty);
 
                     // Insert data
                     foreach (var hoge in data)
                     {
-                        var sqlInsertIntoRent = String.Format(
-    "INSERT OR IGNORE INTO x_ken_all " +
-    "(municipality_code, postal_code, prefecture_name, sikuchouson_name, chouiki_name) " +
-    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')",
-    hoge.MunicipalityCode,
-    hoge.Code,
-    hoge.PrefectureName,
-    hoge.SikuchousonName,
-    hoge.ChouikiName);
-
-                        tableCmd.CommandText = sqlInsertIntoRent;
+                        tableCmd.Parameters["@municipality"].Value = hoge.MunicipalityCode ?? string.Empty;
+                        tableCmd.Parameters["@postal"].Value = hoge.Code ?? string.Empty;
+                        tableCmd.Parameters["@prefecture"].Value = hoge.PrefectureName ?? string.Empty;
+                        tableCmd.Parameters["@sikuchouson"].Value = hoge.SikuchousonName ?? string.Empty;
+                        tableCmd.Parameters["@chouiki"].Value = hoge.ChouikiName ?? string.Empty;
 
                         var InsertIntoRentResult = tableCmd.ExecuteNonQuery();
                     }

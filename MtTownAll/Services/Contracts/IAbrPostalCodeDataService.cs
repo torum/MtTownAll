@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MtTownAll.Services.Contracts;
 
-public interface IAbrPostalCodeService
+public interface IAbrPostalCodeDataService
 {
     ObservableCollection<AbrPostalCode> ParseAbrPostalCodeCsv(string filePath);
 

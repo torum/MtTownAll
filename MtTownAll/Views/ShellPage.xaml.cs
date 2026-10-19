@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -23,6 +24,20 @@ public sealed partial class ShellPage : Page
         //DataContext = ViewModel;
 
         InitializeComponent();
+
+        this.Loaded += ShellPage_Loaded;
+    }
+
+    private async void ShellPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (this.NavigationFrame.Navigate(typeof(PrefecturePage), this.NavigationFrame, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom }))
+        {
+            _currentPage = typeof(PrefecturePage);
+            var queuePage = ViewModel.MainMenuItems.FirstOrDefault();
+            queuePage?.Selected = true;
+
+            await ViewModel.LoadInitialDataAsync();
+        }
     }
 
     public void SetTitleBar(MainWindow wnd)
@@ -30,15 +45,17 @@ public sealed partial class ShellPage : Page
         wnd.SetTitleBar(AppTitleBar);
     }
 
-
     private void NaviView_Loaded(object sender, RoutedEventArgs e)
     {
+        /*
         if (this.NavigationFrame.Navigate(typeof(TestPage), this.NavigationFrame, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom }))
         {
             _currentPage = typeof(TestPage);
             var queuePage = ViewModel.MainMenuItems.FirstOrDefault();
             queuePage?.Selected = true;
         }
+        */
+
     }
 
     private void NaviView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)

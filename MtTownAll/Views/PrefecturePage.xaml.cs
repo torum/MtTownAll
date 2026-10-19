@@ -13,9 +13,8 @@ public sealed partial class PrefecturePage : Page
     public PrefecturePage()
     {
         ViewModel = App.GetService<MainViewModel>();
+        DataContext = ViewModel;
 
         InitializeComponent();
-
-        DataContext = ViewModel;
     }
 }

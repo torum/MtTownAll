@@ -14,6 +14,8 @@ namespace MtTownAll;
 
 public partial class App : Application
 {
+    public static Microsoft.UI.Dispatching.DispatcherQueue CurrentDispatcherQueue { get; private set; } = null!;
+
     public static MainWindow? MainWnd
     {
         get; private set;
@@ -37,6 +39,8 @@ public partial class App : Application
 
     public App()
     {
+        CurrentDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
         InitializeComponent();
 
         Host = Microsoft.Extensions.Hosting.Host.
@@ -48,7 +52,7 @@ public partial class App : Application
             services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
             services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
             services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
-            services.AddSingleton<IAbrPostalCodeService, AbrPostalCodeService>();
+            services.AddSingleton<IAbrPostalCodeDataService, AbrPostalCodeDataService>();
             services.AddSingleton<IRailLineDataService, RailLineDataService>();
             services.AddSingleton<IRailStationDataService, RailStationDataService>();
             // Views and ViewModels

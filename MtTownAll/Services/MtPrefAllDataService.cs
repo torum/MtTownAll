@@ -398,12 +398,9 @@ public class MtPrefAllDataService : IMtPrefAllDataService
         _prefectures = [.. Prefectures];
     }
 
-    public async Task<IEnumerable<Prefecture>> GetPrefectureDataAsync()
+    public IEnumerable<Prefecture> GetPrefectureData()
     {
-        _prefectures ??= [.. Prefectures];
-
-        await Task.CompletedTask;
-        return _prefectures;
+        return _prefectures ??= [.. Prefectures];
     }
 
     public bool InsertAllPrefectureData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<Prefecture> data)

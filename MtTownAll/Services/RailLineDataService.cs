@@ -137,23 +137,48 @@ public class RailLineDataService : IRailLineDataService
 
                     tableCmd.ExecuteNonQuery();
 
+                    /*
+                    var sqlInsertIntoRent = String.Format(
+                    "INSERT OR IGNORE INTO rail_lines " +
+                    "(line_cd, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
+                    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')",
+                    hoge.LineCode,
+                    hoge.LineName,
+                    //hoge.LineType,
+                    hoge.LineLon,
+                    hoge.LineLat,
+                    hoge.LineMapZoom,
+                    hoge.LineStatus,
+                    hoge.LineSort);
+
+                    tableCmd.CommandText = sqlInsertIntoRent;
+                    */
+
+                    tableCmd.CommandText = "INSERT OR IGNORE INTO rail_lines " +
+                        "(line_cd, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
+                        "VALUES ($cd, $name, $lon, $lat, $zoom, $status, $sort)"; //, $type
+
+                    // 2. Initialize parameters once with empty strings before entering the loop
+                    tableCmd.Parameters.AddWithValue("$cd", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$name", string.Empty);
+                    //tableCmd.Parameters.AddWithValue("$type", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$lon", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$lat", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$zoom", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$status", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$sort", string.Empty);
+
                     // Insert data
                     foreach (var hoge in data)
                     {
-                        var sqlInsertIntoRent = String.Format(
-    "INSERT OR IGNORE INTO rail_lines " +
-    "(line_cd, line_name, lon, lat, zoom, e_status, e_sort) " + //, line_type
-    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')",
-    hoge.LineCode,
-    hoge.LineName,
-    //hoge.LineType,
-    hoge.LineLon,
-    hoge.LineLat,
-    hoge.LineMapZoom,
-    hoge.LineStatus,
-    hoge.LineSort);
-
-                        tableCmd.CommandText = sqlInsertIntoRent;
+                        tableCmd.Parameters["$cd"].Value = hoge.LineCode ?? string.Empty;
+                        tableCmd.Parameters["$name"].Value = hoge.LineName ?? string.Empty;
+                        //tableCmd.Parameters["$type"].Value = hoge.LineType ?? string.Empty;
+                        tableCmd.Parameters["$lon"].Value = hoge.LineLon ?? string.Empty;
+                        tableCmd.Parameters["$lat"].Value = hoge.LineLat ?? string.Empty;
+                        tableCmd.Parameters["$zoom"].Value = hoge.LineMapZoom ?? string.Empty;
+                        tableCmd.Parameters["$status"].Value = hoge.LineStatus ?? string.Empty;
+                        tableCmd.Parameters["$sort"].Value = hoge.LineSort ?? string.Empty;
 
                         var InsertIntoRentResult = tableCmd.ExecuteNonQuery();
                     }

@@ -147,26 +147,57 @@ public class MtTownAllDataService : IMtTownAllDataService
 
                     tableCmd.ExecuteNonQuery();
 
+                    /*
+                    var sqlInsertIntoRent = String.Format(
+                    "INSERT OR IGNORE INTO mt_town_all " +
+                    "(lg_code, machiaza_id, machiaza_type, pref, county, city, ward, oaza_cho, chome, koaza, post_code) " +
+                    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')",
+                    hoge.MunicipalityCode,
+                    hoge.TownID,
+                    hoge.ChouAzaType, 
+                    hoge.PrefectureName,
+                    hoge.CountyName,
+                    hoge.SikuchousonName,
+                    hoge.WardName,
+                    hoge.TownName,
+                    hoge.Choume,
+                    hoge.KoazaName,
+                    hoge.PostalCode);
+
+                    tableCmd.CommandText = sqlInsertIntoRent;
+                    */
+
+                    tableCmd.CommandText = "INSERT OR IGNORE INTO mt_town_all " +
+                        "(lg_code, machiaza_id, machiaza_type, pref, county, city, ward, oaza_cho, chome, koaza, post_code) " +
+                        "VALUES ($lg, $mach_id, $mach_type, $pref, $county, $city, $ward, $oaza, $chome, $koaza, $post)";
+
+                    // Initialize parameters once with empty strings before entering the loop
+                    tableCmd.Parameters.AddWithValue("$lg", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$mach_id", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$mach_type", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$pref", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$county", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$city", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$ward", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$oaza", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$chome", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$koaza", string.Empty);
+                    tableCmd.Parameters.AddWithValue("$post", string.Empty);
+
                     // Insert data
                     foreach (var hoge in data)
                     {
-                        var sqlInsertIntoRent = String.Format(
-    "INSERT OR IGNORE INTO mt_town_all " +
-    "(lg_code, machiaza_id, machiaza_type, pref, county, city, ward, oaza_cho, chome, koaza, post_code) " +
-    "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}')",
-    hoge.MunicipalityCode,
-    hoge.TownID,
-    hoge.ChouAzaType, 
-    hoge.PrefectureName,
-    hoge.CountyName,
-    hoge.SikuchousonName,
-    hoge.WardName,
-    hoge.TownName,
-    hoge.Choume,
-    hoge.KoazaName,
-    hoge.PostalCode);
-
-                        tableCmd.CommandText = sqlInsertIntoRent;
+                        tableCmd.Parameters["$lg"].Value = hoge.MunicipalityCode ?? string.Empty;
+                        tableCmd.Parameters["$mach_id"].Value = hoge.TownID ?? string.Empty;
+                        tableCmd.Parameters["$mach_type"].Value = hoge.ChouAzaType ?? string.Empty;
+                        tableCmd.Parameters["$pref"].Value = hoge.PrefectureName ?? string.Empty;
+                        tableCmd.Parameters["$county"].Value = hoge.CountyName ?? string.Empty;
+                        tableCmd.Parameters["$city"].Value = hoge.SikuchousonName ?? string.Empty;
+                        tableCmd.Parameters["$ward"].Value = hoge.WardName ?? string.Empty;
+                        tableCmd.Parameters["$oaza"].Value = hoge.TownName ?? string.Empty;
+                        tableCmd.Parameters["$chome"].Value = hoge.Choume ?? string.Empty;
+                        tableCmd.Parameters["$koaza"].Value = hoge.KoazaName ?? string.Empty;
+                        tableCmd.Parameters["$post"].Value = hoge.PostalCode ?? string.Empty;
 
                         var InsertIntoRentResult = tableCmd.ExecuteNonQuery();
                     }
