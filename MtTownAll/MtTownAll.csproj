@@ -13,9 +13,8 @@
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-		<LangVersion>preview</LangVersion>
-		<!-- 
-	   -->
+		<SelfContained>true</SelfContained>
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsPackageType>None</WindowsPackageType>
 	</PropertyGroup>
 	<ItemGroup>
@@ -50,8 +49,8 @@
 		<PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.3.260402-preview2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.13" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.260930100">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -105,9 +104,9 @@
 	<!-- Publish Properties -->
 	<PropertyGroup>
 		<PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
-		<PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+		<PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">False</PublishReadyToRun>
 		<PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
-		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">False</PublishTrimmed>
 		<ApplicationIcon>Assets\App.ico</ApplicationIcon>
 	</PropertyGroup>
 	<ItemGroup>

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using MtTownAll.Services;
 using MtTownAll.Services.Contracts;
 using MtTownAll.ViewModels;
 using MtTownAll.Views;
+using System;
+using System.Runtime.InteropServices;
 using WinRT.Interop;
 
 
@@ -21,20 +20,20 @@ public partial class App : Application
         get; private set;
     }
 
-    public IHost Host
-    {
-        get;
-    }
+    public IServiceProvider ServiceProvider { get; private set; } = null!;
 
     public static T GetService<T>()
         where T : class
     {
+        /*
         if ((App.Current as App)!.Host.Services.GetService(typeof(T)) is not T service)
         {
             throw new ArgumentException($"{typeof(T)} needs to be registered in ConfigureServices within App.xaml.cs.");
         }
 
         return service;
+        */
+        return (App.Current as App)!.ServiceProvider.GetRequiredService<T>();
     }
 
     public App()
@@ -43,24 +42,22 @@ public partial class App : Application
 
         InitializeComponent();
 
-        Host = Microsoft.Extensions.Hosting.Host.
-        CreateDefaultBuilder().
-        UseContentRoot(AppContext.BaseDirectory).
-        ConfigureServices((context, services) =>
-        {
-            // Core Services
-            services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
-            services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
-            services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
-            services.AddSingleton<IAbrPostalCodeDataService, AbrPostalCodeDataService>();
-            services.AddSingleton<IRailLineDataService, RailLineDataService>();
-            services.AddSingleton<IRailStationDataService, RailStationDataService>();
-            // Views and ViewModels
-            services.AddSingleton<MainViewModel>();
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<ShellPage>();
-        }).
-        Build();
+        var services = new ServiceCollection();
+
+        // Core Services
+        services.AddSingleton<IMtPrefAllDataService, MtPrefAllDataService>();
+        services.AddSingleton<IMtTownAllDataService, MtTownAllDataService>();
+        services.AddSingleton<IXKenAllDataService, XKenAllDataService>();
+        services.AddSingleton<IAbrPostalCodeDataService, AbrPostalCodeDataService>();
+        services.AddSingleton<IRailLineDataService, RailLineDataService>();
+        services.AddSingleton<IRailStationDataService, RailStationDataService>();
+        // Views and ViewModels
+        services.AddSingleton<MainViewModel>();
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<ShellPage>();
+
+        //
+        ServiceProvider = services.BuildServiceProvider();
 
         //Microsoft.UI.Xaml.Application.Current.UnhandledException += App_UnhandledException;
         //TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -90,7 +87,7 @@ public partial class App : Application
         }
 
         MainWnd = App.GetService<MainWindow>();
-        MainWnd.AppWindow.Show(true);
+        MainWnd.Activate();
     }
 
     private void App_Activated(object? sender, Microsoft.Windows.AppLifecycle.AppActivationArguments e)
