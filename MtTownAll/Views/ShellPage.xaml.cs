@@ -30,8 +30,12 @@ public sealed partial class ShellPage : Page
 
     private async void ShellPage_Loaded(object sender, RoutedEventArgs e)
     {
+        await Task.Yield();
+
         if (this.NavigationFrame.Navigate(typeof(PrefecturePage), this.NavigationFrame, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromBottom }))
         {
+            await Task.Yield();
+
             _currentPage = typeof(PrefecturePage);
             var queuePage = ViewModel.MainMenuItems.FirstOrDefault();
             queuePage?.Selected = true;
