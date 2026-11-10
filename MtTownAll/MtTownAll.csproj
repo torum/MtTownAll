@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+		<TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>MtTownAll</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -47,42 +47,26 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.3.260402-preview2" />
-		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
-		<PackageReference Include="CsvHelper" Version="33.1.0" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.14" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.260930100">
+		<PackageReference Include="CsvHelper" Version="34.0.0" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261102100">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="2.6.4" />
-		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.6.4" />
-		<PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.6.4" />
-		<PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.4" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="2.6.6-experimental" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.6.6-experimental" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.6.6-experimental" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.6-experimental" />
 		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
 	</ItemGroup>
+
 	<ItemGroup>
-		<Page Update="Views\PostalCodePageAbr.xaml">
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Views\RailStationPage.xaml">
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Views\RailLinePage.xaml">
-			<SubType>Designer</SubType>
-		</Page>
 		<Page Update="Views\PostalCodePage.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="Views\TownAllPage.xaml">
-			<SubType>Designer</SubType>
-		</Page>
 		<Page Update="Views\SettingsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-	<ItemGroup>
-		<Page Update="Views\PrefecturePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

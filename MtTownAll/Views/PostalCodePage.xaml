@@ -6,7 +6,7 @@
     xmlns:local="using:MtTownAll.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+        xmlns:tabular="using:Microsoft.UI.Xaml.Controls.Tabular"
         xmlns:model="using:MtTownAll.Models"
         NavigationCacheMode="Required"
     mc:Ignorable="d">
@@ -39,56 +39,51 @@
         </Grid>
 
         <Grid Grid.Row="2" Margin="48,12,0,12">
-            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.PostalCodeSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
-                <controls:DataGrid.Resources>
-                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
-                </controls:DataGrid.Resources>
-                <controls:DataGrid.Columns>
+            <tabular:TableView x:Name="dg" ItemsSource="{x:Bind ViewModel.PostalCodeSource, Mode=OneWay}" SelectionMode="Single">
+                <tabular:TableView.Columns>
 
-                    <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="全国地方公共団体コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:PostalCode">
                                 <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="郵便番号">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="郵便番号">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:PostalCode">
                                 <TextBlock Text="{x:Bind Code}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="都道府県名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="都道府県名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:PostalCode">
                                 <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="市区町村名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="市区町村名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:PostalCode">
                                 <TextBlock Text="{x:Bind SikuchousonName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="町域名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="町域名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:PostalCode">
                                 <TextBlock Text="{x:Bind ChouikiName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
+                </tabular:TableView.Columns>
+            </tabular:TableView>
         </Grid>
 
     </Grid>

@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
 using MtTownAll.Services.Contracts;
@@ -25,24 +24,22 @@ public class MtTownAllDataService : IMtTownAllDataService
             return townAll;
         }
 
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = true,
-            Encoding = Encoding.UTF8,
+            HasHeader = true,
+            Separator = ','
         };
 
         using var reader = new StreamReader(filePath, Encoding.UTF8);
-        using (var csv = new CsvReader(reader, config))
+        using (var csv = CsvReader.Create(reader, options))
         {
-            csv.Context.RegisterClassMap<TownCodeClassMapper>();
-
             var records = csv.GetRecords<Town>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 38)
+                if (csv.FieldCount != 38)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 38) @ParseMtTownAllCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.FieldCount != 38) @ParseMtTownAllCsv {csv.FieldCount}");
 
                     // TODO: return error code or msg.
                     return townAll;
@@ -83,32 +80,6 @@ public class MtTownAllDataService : IMtTownAllDataService
         Debug.WriteLine("Open Done @ParseMtTownAllCsv in IMtTownAllDataService");
 
         return townAll;
-    }
-
-    class TownCodeMapper : CsvHelper.Configuration.ClassMap<Town>
-    {
-        public TownCodeMapper()
-        {
-            AutoMap(CultureInfo.CurrentCulture);
-        }
-    }
-
-    class TownCodeClassMapper : CsvHelper.Configuration.ClassMap<Town>
-    {
-        public TownCodeClassMapper()
-        {
-            Map(x => x.MunicipalityCode).Index(0);
-            Map(x => x.TownID).Index(1);
-            Map(x => x.ChouAzaType).Index(2);
-            Map(x => x.PrefectureName).Index(3);
-            Map(x => x.CountyName).Index(6);
-            Map(x => x.SikuchousonName).Index(9);
-            Map(x => x.WardName).Index(12);
-            Map(x => x.TownName).Index(15);
-            Map(x => x.Choume).Index(18);
-            Map(x => x.KoazaName).Index(21);
-            Map(x => x.PostalCode).Index(36);
-        }
     }
 
     public bool InsertAllTownData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<Town> data)

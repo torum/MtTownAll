@@ -1,4 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper;
 
 namespace MtTownAll.Models;
 
@@ -11,38 +11,39 @@ namespace MtTownAll.Models;
 
 
 // 郵便番号（データベーステーブル名：postal_codes）
-public class PostalCode
+[CsvRecord]
+public partial class PostalCode
 {
     //全国地方公共団体コード（カラム名:municipality_code）
-    [Index(0)]
+    [CsvColumn(Index = 0)]
     public string MunicipalityCode
     {
         get; set;
     } = string.Empty;
 
     //郵便番号（カラム名:postal_code）
-    [Index(2)]
+    [CsvColumn(Index = 2)]
     public string Code
     {
         get; set;
     } = string.Empty;
 
     //都道府県名（カラム名:prefecture_name）
-    [Index(3)]
+    [CsvColumn(Index = 6)]
     public string PrefectureName
     {
         get; set;
     } = string.Empty;
 
     //市区町村名（郡名・政令都市名含む）（カラム名:sikuchouson_name）
-    [Index(4)]
+    [CsvColumn(Index = 7)]
     public string SikuchousonName
     {
         get; set;
     } = string.Empty;
 
     // 町域名（カラム名:chouiki_name）
-    [Index(5)]
+    [CsvColumn(Index = 8)]
     public string ChouikiName
     {
         get; set;

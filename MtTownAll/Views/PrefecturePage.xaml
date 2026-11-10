@@ -6,9 +6,9 @@
     xmlns:local="using:MtTownAll.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-        xmlns:model="using:MtTownAll.Models"
-        NavigationCacheMode="Required"
+    xmlns:tabular="using:Microsoft.UI.Xaml.Controls.Tabular"
+    xmlns:model="using:MtTownAll.Models"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
 
     <Grid Margin="0,48,0,0">
@@ -31,60 +31,54 @@
                     </StackPanel>
                 </CommandBar.Content>
             </CommandBar>
-
         </StackPanel>
 
         <Grid Grid.Row="2" Margin="48,12,0,12">
-            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.PrefectureSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
-                <controls:DataGrid.Resources>
-                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
-                </controls:DataGrid.Resources>
-                <controls:DataGrid.Columns>
+            <tabular:TableView x:Name="dg" ItemsSource="{x:Bind ViewModel.PrefectureSource, Mode=OneWay}" SelectionMode="Single">
+                <tabular:TableView.Columns>
 
-                    <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="全国地方公共団体コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Prefecture">
                                 <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    
-                    <controls:DataGridTemplateColumn Header="都道府県名" Tag="PrefectureName">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="都道府県名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Prefecture">
                                 <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="都道府県名_カナ">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="都道府県名_カナ">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Prefecture">
                                 <TextBlock Text="{x:Bind PrefectureNameKana}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="都道府県名_英字">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="都道府県名_英字">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Prefecture">
                                 <TextBlock Text="{x:Bind PrefectureNameRoma}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="都道府県コード" Tag="PrefectureCodeID">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="都道府県コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Prefecture">
                                 <TextBlock Text="{x:Bind Code}" Margin="12,0,0,0" Padding="5"/>
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                </tabular:TableView.Columns>
+            </tabular:TableView>
         </Grid>
 
     </Grid>

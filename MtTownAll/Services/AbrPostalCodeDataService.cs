@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
 using System;
@@ -25,24 +24,22 @@ public class AbrPostalCodeDataService : IAbrPostalCodeDataService
             return result;
         }
 
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = true,
-            Encoding = Encoding.UTF8,
+            HasHeader = true,
+            Separator = ','
         };
 
         using var reader = new StreamReader(filePath, Encoding.UTF8);
-        using (var csv = new CsvReader(reader, config))
+        using (var csv = CsvReader.Create(reader, options))
         {
-            csv.Context.RegisterClassMap<AbrPostalCodeClassMapper>();
-
             var records = csv.GetRecords<AbrPostalCode>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 14)
+                if (csv.FieldCount != 14)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 14) @ParseAbrPostalCodeCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.FieldCount != 14) @ParseAbrPostalCodeCsv {csv.FieldCount}");
 
                     // TODO: return error code or msg.
                     return result;
@@ -86,35 +83,6 @@ public class AbrPostalCodeDataService : IAbrPostalCodeDataService
         Debug.WriteLine("Open Done @ParseAbrPostalCodeCsv in AbrPostalCodeService");
 
         return result;
-    }
-
-    class AbrPostalCodeMapper : CsvHelper.Configuration.ClassMap<AbrPostalCode>
-    {
-        public AbrPostalCodeMapper()
-        {
-            AutoMap(CultureInfo.CurrentCulture);
-        }
-    }
-
-    class AbrPostalCodeClassMapper : CsvHelper.Configuration.ClassMap<AbrPostalCode>
-    {
-        public AbrPostalCodeClassMapper()
-        {
-            Map(x => x.LgCode).Index(0);
-            Map(x => x.MachiazaId).Index(1);
-            Map(x => x.Pref).Index(2);
-            Map(x => x.County).Index(3);
-            Map(x => x.City).Index(4);
-            Map(x => x.Ward).Index(5);
-            Map(x => x.KyotoSt).Index(6);
-            Map(x => x.OazaCho).Index(7);
-            Map(x => x.Chome).Index(8);
-            Map(x => x.Koaza).Index(9);
-            Map(x => x.MachiazaDist).Index(10);
-            Map(x => x.PostCode).Index(11);
-            Map(x => x.AddDate).Index(12);
-            Map(x => x.DltDate).Index(13);
-        }
     }
 
     public bool InsertAbrPostalCodeData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<AbrPostalCode> data)

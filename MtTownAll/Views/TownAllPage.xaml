@@ -7,8 +7,8 @@
     xmlns:model="using:MtTownAll.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        NavigationCacheMode="Required"
-        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    NavigationCacheMode="Required"
+    xmlns:tabular="using:Microsoft.UI.Xaml.Controls.Tabular"
     mc:Ignorable="d">
 
     <Grid Margin="0,48,0,0">
@@ -31,100 +31,106 @@
                     </StackPanel>
                 </CommandBar.Content>
             </CommandBar>
-
         </StackPanel>
 
         <Grid Grid.Row="1">
             <InfoBar Grid.Row="0" Title="{x:Bind ViewModel.InfoBarInfoTitleMtTownAll, Mode=OneWay}" IsOpen="{x:Bind ViewModel.IsShowInfoWindowMtTownAll, Mode=TwoWay}" IsIconVisible="True" IsClosable="True" Severity="Warning" Message="{x:Bind ViewModel.InfoBarInfoMessageMtTownAll, Mode=OneWay}" />
         </Grid>
-        
+
         <Grid Grid.Row="2" Margin="48,12,0,12">
-            <controls:DataGrid ItemsSource="{x:Bind ViewModel.TownAllSource, Mode=OneWay}" Grid.Row="1" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
-                <controls:DataGrid.Resources>
-                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
-                </controls:DataGrid.Resources>
-                <controls:DataGrid.Columns>
-                    <controls:DataGridTemplateColumn Header="全国地方公共団体コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+            <tabular:TableView ItemsSource="{x:Bind ViewModel.TownAllSource, Mode=OneWay}" SelectionMode="Single">
+                <tabular:TableView.Columns>
+
+                    <tabular:TableViewTemplateColumn Header="全国地方公共団体コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind MunicipalityCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="町字ID">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="町字ID">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind TownID}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="町字区分コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="町字区分コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind ChouAzaType}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="都道府県名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="都道府県名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind PrefectureName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="郡名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="郡名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind CountyName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="市区町村名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="市区町村名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind SikuchousonName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="政令市区名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="政令市区名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind WardName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="大字・町名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="大字・町名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind TownName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="丁目名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="丁目名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind Choume}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="子字">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="小字名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind KoazaName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                    <controls:DataGridTemplateColumn Header="郵便番号">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                    <tabular:TableViewTemplateColumn Header="郵便番号">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:Town">
                                 <TextBlock Text="{x:Bind PostalCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
+
+                </tabular:TableView.Columns>
+            </tabular:TableView>
         </Grid>
 
     </Grid>

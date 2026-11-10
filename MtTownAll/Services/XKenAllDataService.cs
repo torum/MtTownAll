@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
 using MtTownAll.Services.Contracts;
@@ -27,23 +26,21 @@ public class XKenAllDataService : IXKenAllDataService
             return kenAll;
         }
 
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = false,
-            Encoding = Encoding.GetEncoding("shift_jis")
+            HasHeader = false,
+            Separator = ','
         };
         using var reader = new StreamReader(filePath, Encoding.GetEncoding("shift_jis"));
-        using (var csv = new CsvReader(reader, config))
+        using (var csv = CsvReader.Create(reader, options))
         {
-            csv.Context.RegisterClassMap<PostalCodeClassMapper>();
-
             var records = csv.GetRecords<PostalCode>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 15)
+                if (csv.FieldCount != 15)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 15) @ParseXKenAllCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.FieldCount != 15) @ParseXKenAllCsv {csv.FieldCount}");
 
                     // TODO: return error code or msg.
                     return kenAll;
@@ -77,26 +74,6 @@ public class XKenAllDataService : IXKenAllDataService
         Debug.WriteLine("Open Done @ParseXKenAllCsv in IXKenAllDataService");
 
         return kenAll;
-    }
-
-    class PostalCodeMapper : CsvHelper.Configuration.ClassMap<PostalCode>
-    {
-        public PostalCodeMapper()
-        {
-            AutoMap(CultureInfo.CurrentCulture);
-        }
-    }
-
-    class PostalCodeClassMapper : CsvHelper.Configuration.ClassMap<PostalCode>
-    {
-        public PostalCodeClassMapper()
-        {
-            Map(x => x.MunicipalityCode).Index(0);
-            Map(x => x.Code).Index(2);
-            Map(x => x.PrefectureName).Index(6);
-            Map(x => x.SikuchousonName).Index(7);
-            Map(x => x.ChouikiName).Index(8);
-        }
     }
 
     public bool InsertAllXKenAllData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<PostalCode> data)

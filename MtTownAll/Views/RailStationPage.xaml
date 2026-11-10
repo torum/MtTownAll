@@ -6,9 +6,9 @@
     xmlns:local="using:MtTownAll.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-        xmlns:model="using:MtTownAll.Models"
-        NavigationCacheMode="Required"
+    xmlns:tabular="using:Microsoft.UI.Xaml.Controls.Tabular"
+    xmlns:model="using:MtTownAll.Models"
+    NavigationCacheMode="Required"
     mc:Ignorable="d">
 
     <Grid Margin="0,48,0,0">
@@ -31,7 +31,6 @@
                     </StackPanel>
                 </CommandBar.Content>
             </CommandBar>
-
         </StackPanel>
 
         <Grid Grid.Row="1">
@@ -39,81 +38,76 @@
         </Grid>
 
         <Grid Grid.Row="2" Margin="48,12,0,12">
-            <controls:DataGrid x:Name="dg" ItemsSource="{x:Bind ViewModel.RailStationSource, Mode=OneWay}" IsReadOnly="True" SelectionMode="Single" CanUserSortColumns="True" AutoGenerateColumns="False" GridLinesVisibility="Horizontal">
-                <controls:DataGrid.Resources>
-                    <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundColor" Color="Transparent" />
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualPrimaryBrush" Color="Transparent"/>
-                    <SolidColorBrush x:Key="DataGridCellFocusVisualSecondaryBrush" Color="Transparent"/>
-                </controls:DataGrid.Resources>
-                <controls:DataGrid.Columns>
+            <tabular:TableView x:Name="dg" ItemsSource="{x:Bind ViewModel.RailStationSource, Mode=OneWay}" SelectionMode="Single">
+                <tabular:TableView.Columns>
 
-                    <controls:DataGridTemplateColumn Header="駅コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="駅コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="駅名">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="駅名">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationName}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="路線コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="路線コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind LineCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="都道府県コード">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="都道府県コード">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind PrefCode}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="経度">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="経度">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationLon}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="緯度">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="緯度">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationLat}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="ステータス">
-                        <!-- 「0:運用中　1:運用前　2:廃止」 -->
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="ステータス">
+                        <!-- 「0:運用中、1:運用前、2:廃止」 -->
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationStatus}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                    <controls:DataGridTemplateColumn Header="ソートキー">
-                        <controls:DataGridTemplateColumn.CellTemplate>
+                    <tabular:TableViewTemplateColumn Header="ソートキー">
+                        <tabular:TableViewTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:RailStation">
                                 <TextBlock Text="{x:Bind StationSort}" Margin="12,0,0,0" Padding="5" />
                             </DataTemplate>
-                        </controls:DataGridTemplateColumn.CellTemplate>
-                    </controls:DataGridTemplateColumn>
+                        </tabular:TableViewTemplateColumn.CellTemplate>
+                    </tabular:TableViewTemplateColumn>
 
-                </controls:DataGrid.Columns>
-            </controls:DataGrid>
+                </tabular:TableView.Columns>
+            </tabular:TableView>
         </Grid>
 
     </Grid>

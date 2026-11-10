@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
 using MtTownAll.Services.Contracts;
@@ -25,24 +24,22 @@ public class RailStationDataService : IRailStationDataService
             return rstation;
         }
 
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = true,
-            Encoding = Encoding.UTF8
+            HasHeader = true,
+            Separator = ','
         };
-        
-        using var reader = new StreamReader(filePath, Encoding.UTF8);
-        using (var csv = new CsvReader(reader, config))
-        {
-            csv.Context.RegisterClassMap<RailStationClassMapper>();
 
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        using (var csv = CsvReader.Create(reader, options))
+        {
             var records = csv.GetRecords<RailStation>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 15)
+                if (csv.FieldCount != 15)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 15) @ParseRailStationCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.FieldCount != 15) @ParseRailStationCsv {csv.FieldCount}");
 
                     // TODO: return error code or msg.
                     return rstation;
@@ -79,29 +76,6 @@ public class RailStationDataService : IRailStationDataService
         Debug.WriteLine("Open Done @ParseRailStationCsv in IRailStationDataService");
         
         return rstation;
-    }
-
-    class RailStationMapper : CsvHelper.Configuration.ClassMap<RailStation>
-    {
-        public RailStationMapper()
-        {
-            AutoMap(CultureInfo.CurrentCulture);
-        }
-    }
-
-    class RailStationClassMapper : CsvHelper.Configuration.ClassMap<RailStation>
-    {
-        public RailStationClassMapper()
-        {
-            Map(x => x.StationCode).Index(0);
-            Map(x => x.StationName).Index(2);
-            Map(x => x.LineCode).Index(5);
-            Map(x => x.PrefCode).Index(6);
-            Map(x => x.StationLon).Index(9);
-            Map(x => x.StationLat).Index(10);
-            Map(x => x.StationStatus).Index(13);
-            Map(x => x.StationSort).Index(14);
-        }
     }
 
     public bool InsertAllRailStationData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<RailStation> data)

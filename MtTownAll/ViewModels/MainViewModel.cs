@@ -714,9 +714,9 @@ public sealed partial class MainViewModel : ObservableValidator
                 IsShowInfoWindowXKenAll = true;
             }
         }
-        catch (CsvHelper.MissingFieldException ex)
+        catch (CsvHelper.CsvFormatException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileKenAllOpen {ex}");
+            Debug.WriteLine($"CsvHelper.CsvFormatException @FileKenAllOpen {ex}");
 
             InfoBarInfoTitleXKenAll = "CSVファイルの読み込みでエラー";
             InfoBarInfoMessageXKenAll = "カラム数が違います。選択したファイルが「x-ken-all.csv」かどうか確認してください。";
@@ -777,9 +777,9 @@ public sealed partial class MainViewModel : ObservableValidator
                 IsShowInfoWindowAbrPostalCode = true;
             }
         }
-        catch (CsvHelper.MissingFieldException ex)
+        catch (CsvHelper.CsvFormatException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileAbrPostalCodeOpen {ex}");
+            Debug.WriteLine($"CsvHelper.CsvFormatException @FileAbrPostalCodeOpen {ex}");
 
             InfoBarInfoTitleAbrPostalCode = "CSVファイルの読み込みでエラー";
             InfoBarInfoMessageAbrPostalCode = "カラム数が違います。選択したファイルが「abr_post_code.csv」かどうか確認してください。";
@@ -841,9 +841,9 @@ public sealed partial class MainViewModel : ObservableValidator
                 IsShowInfoWindowMtTownAll = true;
             }
         }
-        catch (CsvHelper.MissingFieldException ex)
+        catch (CsvHelper.CsvFormatException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileTownAllOpen {ex}");
+            Debug.WriteLine($"CsvHelper.CsvFormatException @FileTownAllOpen {ex}");
             InfoBarInfoTitleMtTownAll = "CSVファイルの読み込みでエラー";
             InfoBarInfoMessageMtTownAll = "カラム数が違います。選択したファイルが「mt_town_all.csv」かどうか確認してください。";
             IsShowInfoWindowMtTownAll = true;
@@ -903,9 +903,9 @@ public sealed partial class MainViewModel : ObservableValidator
                 IsShowInfoWindowRailLine = true;
             }
         }
-        catch (CsvHelper.MissingFieldException ex)
+        catch (CsvHelper.CsvFormatException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileRailLineOpen {ex}");
+            Debug.WriteLine($"CsvHelper.CsvFormatException @FileRailLineOpen {ex}");
 
             InfoBarInfoTitleRailLine = "CSVファイルの読み込みでエラー";
             InfoBarInfoMessageRailLine = "カラム数が違います。選択したファイルが「lineyyyymmddfree.csv」かどうか確認してください。";
@@ -966,9 +966,9 @@ public sealed partial class MainViewModel : ObservableValidator
                 IsShowInfoWindowRailStation = true;
             }
         }
-        catch (CsvHelper.MissingFieldException ex)
+        catch (CsvHelper.CsvFormatException ex)
         {
-            Debug.WriteLine($"CsvHelper.MissingFieldException @FileRailStationOpen {ex}");
+            Debug.WriteLine($"CsvHelper.CsvFormatException @FileRailStationOpen {ex}");
 
             InfoBarInfoTitleRailLine = "CSVファイルの読み込みでエラー";
             InfoBarInfoMessageRailLine = "カラム数が違います。選択したファイルが「stationyyyymmddfree.csv」かどうか確認してください。";

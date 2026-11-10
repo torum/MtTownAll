@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Data.Sqlite;
 using MtTownAll.Models;
 using MtTownAll.Services.Contracts;
@@ -25,24 +24,22 @@ public class RailLineDataService : IRailLineDataService
             return rline;
         }
 
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = true,
-            Encoding = Encoding.UTF8
+            HasHeader = true,
+            Separator = ','
         };
-        
-        using var reader = new StreamReader(filePath, Encoding.UTF8);
-        using (var csv = new CsvReader(reader, config))
-        {
-            csv.Context.RegisterClassMap<RailLineClassMapper>();
 
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        using (var csv = CsvReader.Create(reader, options))
+        {
             var records = csv.GetRecords<RailLine>();
 
             foreach (var record in records)
             {
-                if (csv.ColumnCount != 13)
+                if (csv.FieldCount != 13)
                 {
-                    Debug.WriteLine($"if (csv.ColumnCount != 13) @ParseRailLineCsv {csv.ColumnCount}");
+                    Debug.WriteLine($"if (csv.FieldCount != 13) @ParseRailLineCsv {csv.FieldCount}");
 
                     // TODO: return error code or msg.
                     return rline;
@@ -79,29 +76,6 @@ public class RailLineDataService : IRailLineDataService
         Debug.WriteLine("Open Done @ParseRailLineCsv in IRailLineDataService");
         
         return rline;
-    }
-
-    class RailLineMapper : CsvHelper.Configuration.ClassMap<RailLine>
-    {
-        public RailLineMapper()
-        {
-            AutoMap(CultureInfo.CurrentCulture);
-        }
-    }
-
-    class RailLineClassMapper : CsvHelper.Configuration.ClassMap<RailLine>
-    {
-        public RailLineClassMapper()
-        {
-            Map(x => x.LineCode).Index(0);
-            Map(x => x.LineName).Index(2);
-            //Map(x => x.LineType).Index(7);
-            Map(x => x.LineLon).Index(8);
-            Map(x => x.LineLat).Index(9);
-            Map(x => x.LineMapZoom).Index(10);
-            Map(x => x.LineStatus).Index(11);
-            Map(x => x.LineSort).Index(12);
-        }
     }
 
     public bool InsertAllRainLineData(SqliteConnectionStringBuilder connectionStringBuilder, IEnumerable<RailLine> data)
